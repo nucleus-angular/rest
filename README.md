@@ -11,9 +11,9 @@ An I invite you to have a look at those solutions, they might be a better fit fo
 
 This library differs from those libraries in a few ways.
 
-In contrast to Restangular, this library provides more structure.  You are able to define models and they attributes.  This opens the library to provide functionality like automatic data validation and such.
+In contrast to Restangular, this library provides more structure.  You are able to define models and their attributes.  This opens the library to provide functionality like automatic data validation and such.
 
-In constrast to BreezeJS, this library is designed specific for AngularJS and it designed in such a way that it make no assumptions to the backend used (I know BreezeJS can be used with any backend however it's roots seem to be .NET/EF). Being designed specifically for AngularJS, this library will be able to do certain thing that BreezeJS might not be able to or at least be able to do in as a clean way.  It will also not have functionality that is designed for a specific system (like having Int16, Int32, Int64 data types is probably on useful for .NET/EF).  Everything will be able the most generic level in javascript (that type of data checking can be done on the REST API where I believe it belongs).
+In constrast to BreezeJS, this library is designed specifically for AngularJS and is designed in such a way that it makes no assumptions to the backend used (I know BreezeJS can be used with any backend however it's roots seem to be .NET/EF). Being designed specifically for AngularJS, this library will be able to do certain things that BreezeJS might not be able to od or at least be able to do in as a clean way.  It will also not have functionality that is designed for a specific system (like having Int16, Int32, Int64 data types is probably mainly useful for .NET/EF).  Everything will be at the most generic level in javascript.  Validation based on Int16, Int32, Int64 data types can be done on the REST API where I believe it belongs (since it is not valid for all server side implementations).
 
 As long your are implementing a RESTish API, this solution should work for you.
 
