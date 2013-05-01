@@ -1,10 +1,21 @@
 # Nucleus Angular REST
 
-This component of Nucleus Angular is designed to allow you to easily use a REST API within your AngularJS.  This is designed to be a middle ground between a solution like https://github.com/mgonto/restangular and http://www.breezejs.com/.  If you are looking for something a little more lightweight, I would highly suggest you look into https://github.com/mgonto/restangular.  If your looking for something with more functionality than this solution has, then I would look into http://www.breezejs.com/ (especially if you are using .NET and EF).
+This component of Nucleus Angular is designed to allow you to easily use a REST API within your AngularJS.  There are other libraries that serve a similar a similar purpose to this one and the two I most commonly see reference are:
 
-I don't intend for this library to ever provide as much functionality as something like BreezeJS but only time will time.
+* Restangular - https://github.com/mgonto/restangular
+* BreezeJS - http://www.breezejs.com
 
-This is designed to work with RESTish APIs and has no opinion on what backend you use.  As long your are implementing a RESTish API, this solution should work for you.
+An I invite you to have a look at those solutions, they might be a better fit for you.
+
+## Way Another Library Then
+
+This library differs from those libraries in a few ways.
+
+In contrast to Restangular, this library provides more structure.  You are able to define models and they attributes.  This opens the library to provide functionality like automatic data validation and such.
+
+In constrast to BreezeJS, this library is designed specific for AngularJS and it designed in such a way that it make no assumptions to the backend used (I know BreezeJS can be used with any backend however it's roots seem to be .NET/EF). Being designed specifically for AngularJS, this library will be able to do certain thing that BreezeJS might not be able to or at least be able to do in as a clean way.  It will also not have functionality that is designed for a specific system (like having Int16, Int32, Int64 data types is probably on useful for .NET/EF).  Everything will be able the most generic level in javascript (that type of data checking can be done on the REST API where I believe it belongs).
+
+As long your are implementing a RESTish API, this solution should work for you.
 
 # Testing
 
