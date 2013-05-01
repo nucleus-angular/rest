@@ -113,7 +113,7 @@ describe('Rest Base Repository', function(){
     unitTestMocker.setValidFindUsersMultipleResponse();
     repository.find({firstName: 'Test'}).then(function(data) {
       
-      models = data.parseData;
+      models = data.parsedData;
       
       expect(data.rawResponse).toEqual({
         response: {
@@ -242,7 +242,7 @@ describe('Rest Base Repository', function(){
     unitTestMocker.setValidGetUserResponse();
     repository.find(124)
     .then(function(data) {
-      model = data.parseData;
+      model = data.parsedData;
 
       expect(data.rawResponse).toEqual({
         response: {

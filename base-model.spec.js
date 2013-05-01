@@ -477,7 +477,7 @@ describe('Rest Base Model', function(){
     var modelProject;expect(function() {
       model.getRelation('project', 124).then(function(data) {
         //todo: test rawResponse
-        modelProject = data.parseData[0];
+        modelProject = data.parsedData[0];
       }, function(rawResponse) {
 
       });
@@ -499,7 +499,7 @@ describe('Rest Base Model', function(){
     unitTestMocker.setValidUserProjectsRelationshipMultipleResponse();
     model.getRelation('job').then(function(data) {
       //todo: test rawResponse
-      modelProjects = data.parseData;
+      modelProjects = data.parsedData;
     }, function(rawResponse) {
 
     });
@@ -531,7 +531,7 @@ describe('Rest Base Model', function(){
     unitTestMocker.setValidUserProjectsRelationshipSingleResponse();
     model.getRelation('job', 124).then(function(data) {
       //todo: test rawResponse
-      modelProject = data.parseData[0];
+      modelProject = data.parsedData[0];
     }, function(rawResponse) {
 
     });
@@ -558,7 +558,7 @@ describe('Rest Base Model', function(){
     unitTestMocker.setValidUserProjectsRelationshipMultipleResponse();
     model.getRelation('job').then(function(data) {
       //todo: test rawResponse
-      modelProjects = data.parseData;
+      modelProjects = data.parsedData;
     }, function(rawResponse) {
 
     });
@@ -610,7 +610,7 @@ describe('Rest Base Model', function(){
     unitTestMocker.setValidUserManagerRelationshipResponse();
     model.getRelation('manager').then(function(data) {
       //todo: test rawResponse
-      manager = data.parseData[0];
+      manager = data.parsedData[0];
     }, function(rawResponse) {
 
     });

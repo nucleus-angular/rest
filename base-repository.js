@@ -97,7 +97,7 @@ angular.module('nag.rest.baseRepository', [
 
           //this generic parsing should handle most cases for data parse but can be disabled if manually parsing is preferred/needed
           if(schema.autoParse === true) {
-            data.parseData = (isArray === true ? [] : null);
+            data.parsedData = (isArray === true ? [] : null);
             var dataLocation = (isArray === true ? schema.dataListLocation : schema.dataItemLocation);
             var responseData = stringJsonParser(dataLocation, response);
 
@@ -107,7 +107,7 @@ angular.module('nag.rest.baseRepository', [
                  newObject = self.create(responseData[x], true);
 
                 //push data for the deferred
-                data.parseData.push(newObject);
+                data.parsedData.push(newObject);
 
                 //push data for the return value
                 value.push(newObject);
@@ -116,7 +116,7 @@ angular.module('nag.rest.baseRepository', [
               var newObject = self.create(responseData, true);
 
               //set data for the deferred
-              data.parseData = newObject;
+              data.parsedData = newObject;
 
               //set data for the return value
               value.set(responseData, null, true);
