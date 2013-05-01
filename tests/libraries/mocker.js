@@ -1,0 +1,240 @@
+angular.module('unitTestMocker', [])
+.service('unitTestMocker', [
+  '$httpBackend',
+  function($httpBackend) {
+    this.setValidGetUserResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('GET', '/users/124').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              user: {
+                id: 124,
+                firstName: 'Test',
+                lastName: 'User',
+                username: 'test.user'
+              }
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidPostUserResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('POST', '/users', '{"firstName":"Test","lastName":"User","username":"test.user"}').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              user: {
+                id: 234,
+                firstName: 'Test',
+                lastName: 'User',
+                username: 'test.user'
+              }
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidPostUserCustomRequestFormatResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('POST', '/users', '{"request":{"data":{"firstName":"Test","lastName":"User","username":"test.user"}}}').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              user: {
+                id: 234,
+                firstName: 'Test',
+                lastName: 'User',
+                username: 'test.user'
+              }
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidPostUserCustomResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('POST', '/users', '{"firstName":"Test","username":"test.user"}').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              user: {
+                id: 234,
+                firstName: 'Test',
+                lastName: null,
+                username: 'test.user'
+              }
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidPutUserResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('PUT', '/users/123', '{"id":123,"firstName":"Test2","lastName":"User","username":"test.user"}').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              user: {
+                id: 123,
+                firstName: 'Test2',
+                lastName: 'User',
+                username: 'test.user'
+              }
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidPatchUserResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('PATCH', '/users/123').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              user: {
+                id: 123,
+                firstName: 'Test2',
+                lastName: 'User',
+                username: 'test.user'
+              }
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidDeleteUserResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('DELETE', '/users/123').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: null
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidFindUsersMultipleResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('GET', '/users?firstName=Test').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              users: [{
+                id: 123,
+                firstName: 'Test',
+                lastName: 'User',
+                username: 'test.user'
+              }, {
+                id: 124,
+                firstName: 'Test',
+                lastName: 'User2',
+                username: 'test.user2'
+              }]
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidPostFindUsersMultipleResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('POST', '/users', '{"filters":{"firstName":"Test"}}').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              users: [{
+                id: 123,
+                firstName: 'Test',
+                lastName: 'User',
+                username: 'test.user'
+              }, {
+                id: 124,
+                firstName: 'Test',
+                lastName: 'User2',
+                username: 'test.user2'
+              }]
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidUserProjectsRelationshipSingleResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('GET', '/users/123/projects?projectId=124').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              projects: [{
+                projectId: 124,
+                name: 'Project B'
+              }]
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidUserProjectsRelationshipMultipleResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('GET', '/users/123/projects').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              projects: [{
+                projectId: 123,
+                name: 'Project A'
+              }, {
+                projectId: 124,
+                name: 'Project B'
+              }]
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidUserManagerRelationshipResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.when('GET', '/users?id=124').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              users: [{
+                id: 124,
+                firstName: 'Test',
+                lastName: 'Manager',
+                username: 'test.manager'
+              }]
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.flush = function() {
+      $httpBackend.flush();
+    };
+  }
+]);
+
