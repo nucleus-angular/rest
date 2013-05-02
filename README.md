@@ -132,6 +132,7 @@ The instance of the repository itself has the following API:
 
 * create(data, synced, overrideSchemaOptions) - returns a new empty instance of the model for the repository
 * find(params, headers, isPost, postData) - makes a request to the REST API to retrieve data
+* forceIsArray(value) - will assume the next request for retrieving data result will or wil not be an array (based on passed value), will override schema.isArray
 
 ### Model
 
@@ -151,6 +152,7 @@ The instance of the model itself has the following API:
 * isProperty(property) - tells you if the passed property name is a configured property of the model
 * toJson() - convert the model's data to a simple JSON structure
 * getRelation(relationName, relationId) - gets relational data for the model
+* forceIsArray(value) - will assume the next request for retrieving data result will or wil not be an array (based on passed value), will override schema.isArray
 
 ## Object Definitions
 
@@ -176,6 +178,8 @@ The instance of the model itself has the following API:
   * Whether or not to automatically parse the REST API response
 * **requestFormatter: (default: empty function)**
   * A function that can wrap the model data in a specific format before sending it to the REST API.  This function take one parameter and that in the model data that is being sent.
+* **isArray: (default: null)
+  * Determines whether all requests are or are not arrays when retrieving data.  This can be override on a call by call level with the forceIsArray() method on models/repositories
 
 ## Code Example Documentation
 
@@ -456,4 +460,37 @@ userRepository.find(123).then(function(data) {
   // GET /users/123/project/234
   var project = user.getRelation('project', 234);
 });
+
+//now when retrieving data, the library is smarter enough to guess whether the results will be returned as an array or a single object however sometimes the guess will be wrong.  any time you are retrieving data without an id, it assumes an array will be returned and when you have an id, it assume an object will be returned.  now lets say we have a rest api call with the route /session but it returns a single user object.  well there are a few want to deal with this.  one way is to use the forceIsArray() method:
+
+// get /session
+var sessionRepository = nagRestBaseRepository.create('user', {
+  '/session'
+});
+sessionRepository.forceIsArray(false).find();
+
+//this is also available on the models too.  lets says a user has a relation of manager that routes to /user/:id/manager.  since there is no id after manager the library will assume i is going to return an array but since it won't, lets for it
+user.forceIsArray(false).getRelation('manager');
+
+//the last way for force isArray to a specific value it to specific isArray property on the schema configuration.  with this configuration all request retrieving data will assume isArray is true (unless override with forceIsArray() call):
+var schema = {
+ route: '/users',
+ properties: {
+   id: {
+     sync: false
+   },
+   firstName: {},
+   lastName: {},
+   username: {},
+   email: {}
+ },
+ relations: {
+   project: {
+     route: '/projects'
+   }
+ },
+ dataListLocation: 'response.data.users',
+ dataItemLocation: 'response.data.user',
+ isArray: true
+};
 ```

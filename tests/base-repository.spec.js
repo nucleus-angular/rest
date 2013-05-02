@@ -289,4 +289,89 @@ describe('Rest Base Repository', function(){
       username: 'test.user'
     });
   });
+
+  it('should be able to get one record even though the url shows that multiple records should return on a schema level', function() {
+    nagRestSchemaManager.add('project', projectSchema);
+
+    var repository = nagRestBaseRepository.create('project', {
+      route: '/users/123/projects',
+      isArray: false
+    });
+
+    unitTestMocker.setValidUserProjectsRelationshipMultipleUrlSingleResponse();
+    var modelProject = repository.find();
+    unitTestMocker.flush();
+
+    expect(_.isPlainObject(modelProject)).toBe(true);
+  });
+
+  it('should be able to get multiple records even though the url shows that only one record should return on a schema level', function() {
+    nagRestSchemaManager.add('project', projectSchema);
+
+    var repository = nagRestBaseRepository.create('project', {
+      route: '/users/123/projects',
+      isArray: true
+    });
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleUrlMultipleResponse();
+    var modelProjects = repository.find(234);
+    unitTestMocker.flush();
+
+    expect(modelProjects.length).toBe(2);
+  });
+
+  it('should use forceIsArray over schema.isArray', function() {
+    nagRestSchemaManager.add('project', projectSchema);
+
+    var repository = nagRestBaseRepository.create('project', {
+      route: '/users/123/projects',
+      isArray: true
+    });
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleResponse();
+    var modelProjects = repository.forceIsArray(false).find(234);
+    unitTestMocker.flush();
+
+    expect(_.isPlainObject(modelProjects)).toBe(true);
+  });
+
+  it('should be able to get one record even though the url shows that multiple records should return on a call level', function() {
+    nagRestSchemaManager.add('project', projectSchema);
+
+    var repository = nagRestBaseRepository.create('project', {
+      route: '/users/123/projects'
+    });
+
+    unitTestMocker.setValidUserProjectsRelationshipMultipleUrlSingleResponse();
+    var modelProject = repository.forceIsArray(false).find();
+    unitTestMocker.flush();
+
+    expect(_.isPlainObject(modelProject)).toBe(true);
+
+    unitTestMocker.setValidUserProjectsRelationshipMultipleResponse();
+    modelProject = repository.find();
+    unitTestMocker.flush();
+
+    expect(modelProject.length).toBe(2);
+  });
+
+  it('should be able to get multiple records even though the url shows that only one record should return on a call level', function() {
+    nagRestSchemaManager.add('project', projectSchema);
+
+    var repository = nagRestBaseRepository.create('project', {
+      route: '/users/123/projects'
+    });
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleUrlMultipleResponse();
+    var modelProjects = repository.forceIsArray(true).find(234);
+    unitTestMocker.flush();
+
+    expect(modelProjects.length).toBe(2);
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleResponse();
+    modelProjects = repository.find(234);
+    unitTestMocker.flush();
+
+    expect(_.isPlainObject(modelProjects)).toBe(true);
+  });
 });

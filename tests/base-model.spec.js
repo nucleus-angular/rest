@@ -474,13 +474,9 @@ describe('Rest Base Model', function(){
       lastName: 'User',
       username: 'test.user'
     }, true);
-    var modelProject;expect(function() {
-      model.getRelation('project', 124).then(function(data) {
-        //todo: test rawResponse
-        modelProject = data.parsedData[0];
-      }, function(rawResponse) {
 
-      });
+    expect(function() {
+      model.getRelation('project', 234);
     }).toThrow(new Error("There is no relationship defined for project"));
   });
 
@@ -529,16 +525,16 @@ describe('Rest Base Model', function(){
     var modelProject;
 
     unitTestMocker.setValidUserProjectsRelationshipSingleResponse();
-    model.getRelation('job', 124).then(function(data) {
+    model.getRelation('job', 234).then(function(data) {
       //todo: test rawResponse
-      modelProject = data.parsedData[0];
+      modelProject = data.parsedData;
     }, function(rawResponse) {
 
     });
     unitTestMocker.flush();
 
     expect(modelProject.toJson()).toEqual({
-      projectId: 124,
+      projectId: 234,
       name: 'Project B'
     });
   });
@@ -585,13 +581,13 @@ describe('Rest Base Model', function(){
     manager = model.getRelation('manager');
     unitTestMocker.flush();
 
-    expect(manager[0].toJson()).toEqual({
+    expect(manager.toJson()).toEqual({
       id: 124,
       firstName: 'Test',
       lastName: 'Manager',
       username: 'test.manager'
     });
-    expect(manager[0]._getSelfRoute(false)).toBe('/users/124');
+    expect(manager._getSelfRoute(false)).toBe('/users/124');
   });
 
   it('should be able to get relationship by way of promise', function() {
@@ -610,7 +606,7 @@ describe('Rest Base Model', function(){
     unitTestMocker.setValidUserManagerRelationshipResponse();
     model.getRelation('manager').then(function(data) {
       //todo: test rawResponse
-      manager = data.parsedData[0];
+      manager = data.parsedData;
     }, function(rawResponse) {
 
     });
@@ -623,5 +619,114 @@ describe('Rest Base Model', function(){
       username: 'test.manager'
     });
     expect(manager._getSelfRoute(false)).toBe('/users/124');
+  });
+
+  it('should be able to get one record even though the url shows that multiple records should return on a schema level', function() {
+    nagRestSchemaManager.add('user', userSchema);
+    nagRestSchemaManager.add('project', projectSchema);
+
+    var model = nagRestBaseModel.create('user', {
+      id: 123,
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'test.user'
+    }, true, {
+      isArray: false
+    });
+
+
+    unitTestMocker.setValidUserProjectsRelationshipMultipleUrlSingleResponse();
+    var modelProject = model.getRelation('job');
+    unitTestMocker.flush();
+
+    expect(_.isPlainObject(modelProject)).toBe(true);
+  });
+
+  it('should be able to get multiple records even though the url shows that only one record should return on a schema level', function() {
+    nagRestSchemaManager.add('user', userSchema);
+    nagRestSchemaManager.add('project', projectSchema);
+
+    var model = nagRestBaseModel.create('user', {
+      id: 123,
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'test.user'
+    }, true, {
+      isArray: true
+    });
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleUrlMultipleResponse();
+    var modelProjects = model.getRelation('job', 234);
+    unitTestMocker.flush();
+
+    expect(modelProjects.length).toBe(2);
+  });
+
+  it('should use forceIsArray over schema.isArray', function() {
+    nagRestSchemaManager.add('user', userSchema);
+    nagRestSchemaManager.add('project', projectSchema);
+
+    var model = nagRestBaseModel.create('user', {
+      id: 123,
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'test.user'
+    }, true, {
+      isArray: true
+    });
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleResponse();
+    var modelProjects = model.forceIsArray(false).getRelation('job', 234);
+    unitTestMocker.flush();
+
+    expect(_.isPlainObject(modelProjects)).toBe(true);
+  });
+
+  it('should be able to get one record even though the url shows that multiple records should return on a call level', function() {
+    nagRestSchemaManager.add('user', userSchema);
+    nagRestSchemaManager.add('project', projectSchema);
+
+    var model = nagRestBaseModel.create('user', {
+      id: 123,
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'test.user'
+    }, true);
+
+    unitTestMocker.setValidUserProjectsRelationshipMultipleUrlSingleResponse();
+    var modelProject = model.forceIsArray(false).getRelation('job');
+    unitTestMocker.flush();
+
+    expect(_.isPlainObject(modelProject)).toBe(true);
+
+    unitTestMocker.setValidUserProjectsRelationshipMultipleResponse();
+    modelProject = model.getRelation('job');
+    unitTestMocker.flush();
+
+    expect(modelProject.length).toBe(2);
+  });
+
+  it('should be able to get multiple records even though the url shows that only one record should return on a call level', function() {
+    nagRestSchemaManager.add('user', userSchema);
+    nagRestSchemaManager.add('project', projectSchema);
+
+    var model = nagRestBaseModel.create('user', {
+      id: 123,
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'test.user'
+    }, true);
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleUrlMultipleResponse();
+    var modelProjects = model.forceIsArray(true).getRelation('job', 234);
+    unitTestMocker.flush();
+
+    expect(modelProjects.length).toBe(2);
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleResponse();
+    var modelProjects = model.getRelation('job', 234);
+    unitTestMocker.flush();
+
+    expect(_.isPlainObject(modelProjects)).toBe(true);
   });
 });

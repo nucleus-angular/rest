@@ -16,6 +16,7 @@ angular.module('nag.rest.baseModel', [
     var baseObject = function(isRemote) {
       var self = this;
       var nagRestBaseRepository = $injector.get('nagRestBaseRepository');
+      var forceIsArray = null;
       isRemote = isRemote || false;
 
       var schema = {};
@@ -76,7 +77,6 @@ angular.module('nag.rest.baseModel', [
        * @param value
        */
       var setValue = function(property, value, notDirty) {
-        //console.log(schema);
         notDirty = notDirty || false;
 
         if(schema.properties[property] && data[property] !== value) {
@@ -119,12 +119,24 @@ angular.module('nag.rest.baseModel', [
         return selfRoute;
       };
 
+      this._getIsArray = function(value) {
+        if(_.isBoolean(forceIsArray) || _.isBoolean(schema.isArray)) {
+          if(_.isBoolean(forceIsArray)) {
+            value = forceIsArray;
+            forceIsArray = null;
+          } else {
+            value = schema.isArray;
+          }
+        };
+
+        return value;
+      }
+
       this.get = function(property) {
         return data[property];
       };
 
       this.set = function(property, value, notDirty) {
-        //console.log(property);
         notDirty = notDirty || false;
 
         if(_.isObject(property)) {
@@ -221,14 +233,18 @@ angular.module('nag.rest.baseModel', [
         return data;
       };
 
+      this.forceIsArray = function(value) {
+        forceIsArray = value;
+        return this;
+      }
+
       this.getRelation = function(relationName, relationId) {
         if(!schema.relations[relationName]) {
           throw new Error('There is no relationship defined for ' + relationName);
         }
 
-        var params, value;
+        var value;
         var relationshipSchema = nagRestSchemaManager.get(schema.relations[relationName].resource);
-
         if(!schema.relations[relationName].property) {
           relationshipSchema.route = this._getSelfRoute(false) + relationshipSchema.route;
         }
@@ -238,11 +254,9 @@ angular.module('nag.rest.baseModel', [
         //determine if we are getting all one or a single relationship model
         if(relationId || schema.relations[relationName].property) {
           relationId = relationId || data[schema.relations[relationName].property];
-          params = {};
-          params[relationshipSchema.idProperty] = relationId;
-          value = modelService.find(params);
+          value = modelService.forceIsArray(this._getIsArray(null)).find(relationId);
         } else {
-          value = modelService.find();
+          value = modelService.forceIsArray(this._getIsArray(null)).find();
         }
 
         return value;

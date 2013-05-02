@@ -9,7 +9,8 @@ files = [
   'components/angular/angular.js',
   'components/angular-mocks/angular-mocks.js',
   'tests/libraries/mocker.js',
-  '*.js'
+  '*.js',
+  'tests/*.js'
 ];
 
 autoWatch = false;

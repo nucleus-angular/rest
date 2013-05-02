@@ -4,7 +4,7 @@ angular.module('unitTestMocker', [])
   function($httpBackend) {
     this.setValidGetUserResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('GET', '/users/124').respond(function(method, url, data) {
+      $httpBackend.expect('GET', '/users/124').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -23,7 +23,7 @@ angular.module('unitTestMocker', [])
 
     this.setValidPostUserResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('POST', '/users', '{"firstName":"Test","lastName":"User","username":"test.user"}').respond(function(method, url, data) {
+      $httpBackend.expect('POST', '/users', '{"firstName":"Test","lastName":"User","username":"test.user"}').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -42,7 +42,7 @@ angular.module('unitTestMocker', [])
 
     this.setValidPostUserCustomRequestFormatResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('POST', '/users', '{"request":{"data":{"firstName":"Test","lastName":"User","username":"test.user"}}}').respond(function(method, url, data) {
+      $httpBackend.expect('POST', '/users', '{"request":{"data":{"firstName":"Test","lastName":"User","username":"test.user"}}}').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -61,7 +61,7 @@ angular.module('unitTestMocker', [])
 
     this.setValidPostUserCustomResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('POST', '/users', '{"firstName":"Test","username":"test.user"}').respond(function(method, url, data) {
+      $httpBackend.expect('POST', '/users', '{"firstName":"Test","username":"test.user"}').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -80,7 +80,7 @@ angular.module('unitTestMocker', [])
 
     this.setValidPutUserResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('PUT', '/users/123', '{"id":123,"firstName":"Test2","lastName":"User","username":"test.user"}').respond(function(method, url, data) {
+      $httpBackend.expect('PUT', '/users/123', '{"id":123,"firstName":"Test2","lastName":"User","username":"test.user"}').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -99,7 +99,7 @@ angular.module('unitTestMocker', [])
 
     this.setValidPatchUserResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('PATCH', '/users/123').respond(function(method, url, data) {
+      $httpBackend.expect('PATCH', '/users/123').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -118,7 +118,7 @@ angular.module('unitTestMocker', [])
 
     this.setValidDeleteUserResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('DELETE', '/users/123').respond(function(method, url, data) {
+      $httpBackend.expect('DELETE', '/users/123').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -130,7 +130,7 @@ angular.module('unitTestMocker', [])
 
     this.setValidFindUsersMultipleResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('GET', '/users?firstName=Test').respond(function(method, url, data) {
+      $httpBackend.expect('GET', '/users?firstName=Test').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -154,7 +154,7 @@ angular.module('unitTestMocker', [])
 
     this.setValidPostFindUsersMultipleResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('POST', '/users', '{"filters":{"firstName":"Test"}}').respond(function(method, url, data) {
+      $httpBackend.expect('POST', '/users', '{"filters":{"firstName":"Test"}}').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -178,12 +178,32 @@ angular.module('unitTestMocker', [])
 
     this.setValidUserProjectsRelationshipSingleResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('GET', '/users/123/projects?projectId=124').respond(function(method, url, data) {
+      $httpBackend.expect('GET', '/users/123/projects/234').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              project: {
+                projectId: 234,
+                name: 'Project B'
+              }
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidUserProjectsRelationshipMultipleResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.expect('GET', '/users/123/projects').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
             data: {
               projects: [{
+                projectId: 123,
+                name: 'Project A'
+              }, {
                 projectId: 124,
                 name: 'Project B'
               }]
@@ -193,9 +213,26 @@ angular.module('unitTestMocker', [])
       });
     };
 
-    this.setValidUserProjectsRelationshipMultipleResponse = function() {
+    this.setValidUserProjectsRelationshipMultipleUrlSingleResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('GET', '/users/123/projects').respond(function(method, url, data) {
+      $httpBackend.expect('GET', '/users/123/projects').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              project: {
+                projectId: 123,
+                name: 'Project A'
+              }
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidUserProjectsRelationshipSingleUrlMultipleResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.expect('GET', '/users/123/projects/234').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -215,17 +252,17 @@ angular.module('unitTestMocker', [])
 
     this.setValidUserManagerRelationshipResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.when('GET', '/users?id=124').respond(function(method, url, data) {
+      $httpBackend.expect('GET', '/users/124').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
             data: {
-              users: [{
+              user: {
                 id: 124,
                 firstName: 'Test',
                 lastName: 'Manager',
                 username: 'test.manager'
-              }]
+              }
             }
           }
         }, {}];

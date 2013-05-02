@@ -49,7 +49,8 @@ describe('Rest Schema Manager', function(){
       relations: {},
       dataListLocation: nagRestResponseDataLocation,
       dataItemLocation: nagRestResponseDataLocation,
-      autoParse: true
+      autoParse: true,
+      isArray: null
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user');
@@ -76,7 +77,8 @@ describe('Rest Schema Manager', function(){
       relations: {},
       dataListLocation: nagRestResponseDataLocation,
       dataItemLocation: nagRestResponseDataLocation,
-      autoParse: true
+      autoParse: true,
+      isArray: null
     };
 
     var expected2 = {
@@ -90,7 +92,8 @@ describe('Rest Schema Manager', function(){
       relations: {},
       dataListLocation: nagRestResponseDataLocation,
       dataItemLocation: nagRestResponseDataLocation,
-      autoParse: true
+      autoParse: true,
+      isArray: null
     };
 
     var userSchema = nagRestSchemaManager.get('user');
@@ -139,7 +142,8 @@ describe('Rest Schema Manager', function(){
       relations: {},
       dataListLocation: nagRestResponseDataLocation,
       dataItemLocation: nagRestResponseDataLocation,
-      autoParse: true
+      autoParse: true,
+      isArray: null
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user', {
@@ -168,7 +172,8 @@ describe('Rest Schema Manager', function(){
       relations: {},
       dataListLocation: nagRestResponseDataLocation,
       dataItemLocation: nagRestResponseDataLocation,
-      autoParse: true
+      autoParse: true,
+      isArray: null
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user', {
@@ -204,9 +209,39 @@ describe('Rest Schema Manager', function(){
       relations: {},
       dataListLocation: nagRestResponseDataLocation,
       dataItemLocation: nagRestResponseDataLocation,
-      autoParse: true
+      autoParse: true,
+      isArray: null
     };
 
+    var retrievedSchema = nagRestSchemaManager.get('user');
+
+    expect(retrievedSchema.requestFormatter.toString().replace(/\s/g, '')).toBe('function(){}');
+
+    delete retrievedSchema.requestFormatter;
+
+    expect(retrievedSchema).toEqual(expected);
+  });
+
+  it('should not modified the stored schema when a pulled schema is modified', function() {
+    nagRestSchemaManager.add('user', schema);
+
+    var expected = {
+      route: '/users',
+      properties: {
+        id: {
+          sync: false
+        }
+      },
+      idProperty: nagRestModelIdProperty,
+      relations: {},
+      dataListLocation: nagRestResponseDataLocation,
+      dataItemLocation: nagRestResponseDataLocation,
+      autoParse: true,
+      isArray: null
+    };
+
+    var modifiedSchema = nagRestSchemaManager.get('user');
+    modifiedSchema.route = '/should/not/reflect/in/stored/schema';
     var retrievedSchema = nagRestSchemaManager.get('user');
 
     expect(retrievedSchema.requestFormatter.toString().replace(/\s/g, '')).toBe('function(){}');

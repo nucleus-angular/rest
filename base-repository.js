@@ -15,6 +15,7 @@ angular.module('nag.rest.baseRepository', [
     var baseObject = function() {
       var resourceName = null;
       var schema = {};
+      var forceIsArray = null;
 
       this._setSchema = function(options) {
         if(Object.keys(schema).length === 0) {
@@ -47,6 +48,24 @@ angular.module('nag.rest.baseRepository', [
         return selfRoute;
       };
 
+      this._getIsArray = function(value) {
+        if(_.isBoolean(forceIsArray) || _.isBoolean(schema.isArray)) {
+          if(_.isBoolean(forceIsArray)) {
+            value = forceIsArray;
+            forceIsArray = null
+          } else {
+            value = schema.isArray;;
+          }
+        };
+
+        return value;
+      }
+
+      this.forceIsArray = function(value) {
+        forceIsArray = value;
+        return this;
+      }
+
       this.find = function(params, headers, isPost, postData) {
         params = params || {};
         headers = headers || {};
@@ -55,7 +74,7 @@ angular.module('nag.rest.baseRepository', [
         var idPropertyValue;
         var self = this;
         var isArray = true;
-        var url = this._getSelfRoute()
+        var url = this._getSelfRoute();
 
         var httpConfig = {
           url: url,
@@ -80,16 +99,19 @@ angular.module('nag.rest.baseRepository', [
           httpConfig.url += '/' + params;
         }
 
+        isArray = this._getIsArray(isArray);
+
         var value = (isArray === true ? [] : self.create());
         var deferred = $q.defer();
         value.then = deferred.promise.then;
 
         /*httpConfig = _.extend({
-            method: 'GET'
-        }, httpConfig);*/
+         method: 'GET'
+         }, httpConfig);*/
 
         $http(httpConfig)
         .success(function(response) {
+
           var data = {
             rawResponse: response
           }
@@ -104,7 +126,7 @@ angular.module('nag.rest.baseRepository', [
             //determine to parse as array or object
             if(_(responseData).isArray()) {
               for(var x = 0; x < responseData.length; x += 1) {
-                 newObject = self.create(responseData[x], true);
+                newObject = self.create(responseData[x], true);
 
                 //push data for the deferred
                 data.parsedData.push(newObject);
@@ -136,6 +158,9 @@ angular.module('nag.rest.baseRepository', [
 
       this.create = function(data, isRemote, overrideSchemaOptions) {
         overrideSchemaOptions = overrideSchemaOptions || {};
+
+        //this will make sure that any custom values of the repositories schema are copied over to the models that it generates
+        overrideSchemaOptions = _.merge(schema, overrideSchemaOptions);
         data = data || {};
         isRemote = isRemote || false;
         return nagRestBaseModel.create(resourceName, data, isRemote, overrideSchemaOptions);
@@ -145,7 +170,8 @@ angular.module('nag.rest.baseRepository', [
     baseObject.create = function(resourceName, overrideSchemaOptions) {
       var newObject = {};
       this.call(newObject);
-      newObject._setSchema(nagRestSchemaManager.get(resourceName, overrideSchemaOptions));
+      var schema = nagRestSchemaManager.get(resourceName, overrideSchemaOptions);
+      newObject._setSchema(schema);
       newObject._setModelSchemaName(resourceName);
       return newObject;
     };

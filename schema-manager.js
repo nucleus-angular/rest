@@ -20,7 +20,7 @@ angular.module('nag.rest.schemaManager', [
             return _.merge(newSchema, overrideSchemaOptions);
           }
 
-          return schemas[resourceName];
+          return _.clone(schemas[resourceName], true);
         }
       },
 
@@ -35,7 +35,8 @@ angular.module('nag.rest.schemaManager', [
             dataListLocation: nagRestResponseDataLocation,
             dataItemLocation: nagRestResponseDataLocation,
             autoParse: true,
-            requestFormatter: nagRestRequestFormatter
+            requestFormatter: nagRestRequestFormatter,
+            isArray: null
           }, schema);
         }
       },
