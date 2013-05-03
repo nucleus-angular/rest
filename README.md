@@ -7,7 +7,7 @@ This component of Nucleus Angular is designed to allow you to easily use a REST 
 
 An I invite you to have a look at those solutions, they might be a better fit for you.
 
-## Way Another Library Then
+## Why Another Library Then
 
 This library differs from those libraries in a few ways.
 
