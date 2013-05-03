@@ -23,7 +23,8 @@ angular.module('nag.rest.baseModel', [
        *
        * @type {{}}
        */
-      var data = {};
+      this.data = {};
+      var remoteData = {};
 
       /**
        * Stores a list of properties that have been changed since the last sync
@@ -32,13 +33,21 @@ angular.module('nag.rest.baseModel', [
        */
       var dirtyProperties = [];
 
+      this._setRemoteData = function(data) {
+        remoteData = _.clone(data);
+      }
+
+      this._getRemoteData = function() {
+        return remoteData;
+      }
+
       /**
        * Returns a list an object with the required data need to sync the model.  This can be useful for APIs that support PATCH.
        *
        * @param type Can be either create, update, or full
        * @returns {{}}
        */
-      var getDataForSync = function(type) {
+      this._getDataForSync = function(type) {
         //just return the json of the model if doing a full sync
         if(type === 'full') {
           return self.toJson();
@@ -53,13 +62,14 @@ angular.module('nag.rest.baseModel', [
 
         type = type || (isRemote === true ? 'update' : 'create');
         syncData = {};
-        keys = Object.keys(dirtyProperties);
+
+        keys = Object.keys(this.data);
 
         //build the object up of the dirty properties
         for(dataKey in keys) {
-          if(schema.properties.hasOwnProperty(dirtyProperties[dataKey])) {
-            if(schema.properties[dirtyProperties[dataKey]].sync === undefined || type === schema.properties[dirtyProperties[dataKey]].sync) {
-              syncData[dirtyProperties[dataKey]] = data[dirtyProperties[dataKey]];
+          if(this.data[keys[dataKey]] !== remoteData[keys[dataKey]]) {
+            if(schema.properties[keys[dataKey]].sync === undefined || type === schema.properties[keys[dataKey]].sync) {
+              syncData[keys[dataKey]] = this.data[keys[dataKey]];
             }
           }
         }
@@ -73,17 +83,17 @@ angular.module('nag.rest.baseModel', [
        * @param property
        * @param value
        */
-      var setValue = function(property, value, notDirty) {
+      /*this._setValue = function(property, value, notDirty) {
         notDirty = notDirty || false;
 
-        if(schema.properties[property] && data[property] !== value) {
-          data[property] = value;
+        if(schema.properties[property] && this.data[property] !== value) {
+          this.data[property] = value;
 
           if(notDirty === false && dirtyProperties.indexOf(property) === -1) {
             dirtyProperties.push(property);
           }
         }
-      };
+      };*/
 
       this._setSchema = function(options) {
         if(Object.keys(schema).length === 0) {
@@ -109,7 +119,7 @@ angular.module('nag.rest.baseModel', [
             selfRoute = selfRoute.substr(selfRoute.lastIndexOf('/'));
           }
 
-          selfRoute += '/' + data[schema.idProperty];
+          selfRoute += '/' + this.data[schema.idProperty];
         }
 
         if(withBaseRoute) {
@@ -132,8 +142,8 @@ angular.module('nag.rest.baseModel', [
         return value;
       }
 
-      this.get = function(property) {
-        return data[property];
+      /*this.get = function(property) {
+        return this.data[property];
       };
 
       this.set = function(property, value, notDirty) {
@@ -144,17 +154,17 @@ angular.module('nag.rest.baseModel', [
           var keys = Object.keys(property);
 
           for(var x = 0; x < keys.length; x += 1) {
-            setValue(keys[x], property[keys[x]], notDirty);
+            this._setValue(keys[x], property[keys[x]], notDirty);
           }
         } else {
           //set single value
-          setValue(property, value, notDirty);
+          this._setValue(property, value, notDirty);
         }
-      };
+      };*/
 
       this.isRemote = function() {
         if(isRemote) {
-          if(data[schema.idProperty]) {
+          if(this.data[schema.idProperty]) {
             return true;
           }
         }
@@ -163,10 +173,26 @@ angular.module('nag.rest.baseModel', [
       };
 
       this.isDirty = function() {
-        return dirtyProperties.length > 0;
+        return this.getDirtyProperties().length > 0;
       };
 
       this.getDirtyProperties = function() {
+        var keys = Object.keys(this.data);
+        var dirtyProperties = [];
+
+
+
+//        console.log('------------------------------');
+//        console.log(this.data);
+//        console.log(remoteData);
+//        console.log('------------------------------');
+
+        //build the object up of the dirty properties
+        for(dataKey in keys) {
+          if(this.data[keys[dataKey]] !== remoteData[keys[dataKey]]) {
+            dirtyProperties.push(keys[dataKey]);
+          }
+        }
         return dirtyProperties;
       };
 
@@ -181,11 +207,11 @@ angular.module('nag.rest.baseModel', [
         }
 
         if(method === 'POST') {
-          requestData = getDataForSync('create');
+          requestData = this._getDataForSync('create');
         } else if(method === 'PUT') {
-          requestData = getDataForSync('full');
+          requestData = this._getDataForSync('full');
         } else if(method !== 'DELETE') {
-          requestData = getDataForSync('update');
+          requestData = this._getDataForSync('update');
         }
 
         var finalDataFormat = schema.requestFormatter(requestData) || requestData;
@@ -198,7 +224,9 @@ angular.module('nag.rest.baseModel', [
         .success(function(response) {
           if(syncLocal) {
             var modelData = stringJsonParser(schema.dataItemLocation, response);
-            self.set(modelData, null, true);
+//            self.set(modelData, null, true);
+            self.data = modelData;
+            remoteData = modelData;
             dirtyProperties = [];
           }
           deferred.resolve(response);
@@ -219,8 +247,9 @@ angular.module('nag.rest.baseModel', [
           this.sync('DELETE', false);
 
           //clear of the idProperty
-          delete data[schema.idProperty];
+          delete this.data[schema.idProperty];
 
+          remoteData = {};
           this._setSynced(false);
         }
       };
@@ -230,7 +259,7 @@ angular.module('nag.rest.baseModel', [
       };
 
       this.toJson = function() {
-        return data;
+        return this.data;
       };
 
       this.forceIsArray = function(value) {
@@ -257,7 +286,7 @@ angular.module('nag.rest.baseModel', [
 
         //determine if we are getting all one or a single relationship model
         if(relationId || schema.relations[relationName].property) {
-          relationId = relationId || data[schema.relations[relationName].property];
+          relationId = relationId || this.data[schema.relations[relationName].property];
           value = modelService.forceIsArray(this._getIsArray(null)).find(relationId);
         } else {
           value = modelService.forceIsArray(this._getIsArray(null)).find();
@@ -278,9 +307,18 @@ angular.module('nag.rest.baseModel', [
       newObject._setSchema(schema);
 
       //Determine if the data should be set as dirty or not
-      var dataIsDirty = (isRemote && data[schema.idProperty] ? true : false);
+//      var dataIsDirty = (isRemote && data[schema.idProperty] ? true : false);
 
-      newObject.set(data, undefined, dataIsDirty);
+//      newObject.set(data, undefined, dataIsDirty);
+      newObject.data = data;
+
+      if(isRemote && data[schema.idProperty]) {
+//        console.log('-----------');
+//        console.log(data);
+//        console.log('-----------');
+        newObject._setRemoteData(data);
+      }
+
       return newObject;
     };
 

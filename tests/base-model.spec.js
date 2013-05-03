@@ -90,12 +90,12 @@ describe('Rest Base Model', function(){
     };
     var model = nagRestBaseModel.create('user', initialData);
 
-    //expect(model.toJson()).toEqual(initialData);
-    /*expect(model.getDirtyProperties()).toEqual([
+    expect(model.toJson()).toEqual(initialData);
+    expect(model.getDirtyProperties()).toEqual([
       'firstName',
       'lastName'
     ]);
-    expect(model.isDirty()).toBe(true);*/
+    expect(model.isDirty()).toBe(true);
     expect(1).toBe(1);
   });
 
@@ -194,55 +194,7 @@ describe('Rest Base Model', function(){
     expect(model._getSelfRoute(false)).toBe('/users/123');
   });
 
-  it('should be able to set/get a single value', function() {
-    nagRestSchemaManager.add('user', userSchema);
-    var model = nagRestBaseModel.create('user');
-    var firstName = 'Test';
-    model.set('firstName', firstName);
-
-    expect(model.get('firstName')).toBe(firstName);
-  });
-
-  it('should be able to set/get a multiple values', function() {
-    nagRestSchemaManager.add('user', userSchema);
-    var model = nagRestBaseModel.create('user');
-    var data = {
-      firstName: 'Test',
-      lastName: 'User'
-    };
-    model.set(data);
-
-    expect(model.get('firstName')).toBe(data.firstName);
-    expect(model.get('lastName')).toBe(data.lastName);
-  });
-
-  it('should not reset data when setting multiple values in one set() call', function() {
-
-    nagRestSchemaManager.add('user', userSchema);
-    var model = nagRestBaseModel.create('user', {
-      id: 123
-    });
-    var data = {
-      firstName: 'Test',
-      lastName: 'User'
-    };
-    model.set(data);
-
-    expect(model.get('id')).toBe(123);
-    expect(model.get('firstName')).toBe(data.firstName);
-    expect(model.get('lastName')).toBe(data.lastName);
-  });
-
-  it('should not be able to set data that is not defined in the property section of the schema', function() {
-    nagRestSchemaManager.add('user', userSchema);
-    var model = nagRestBaseModel.create('user');
-    var test = 'Test';
-    model.set('test', test);
-
-    expect(model.get('test')).toBeUndefined();
-  });
-
-  it('should set dirty properties when set data to new value', function() {
+  it('should set dirty properties when setting data to new value', function() {
     nagRestSchemaManager.add('user', userSchema);
     var data = {
       id: 123,
@@ -251,10 +203,9 @@ describe('Rest Base Model', function(){
       username: 'test.user'
     };
     var model = nagRestBaseModel.create('user', data, true);
-    model.set({
-      firstName: 'Test2',
-      lastName: 'User2'
-    });
+
+    model.data.firstName = 'Test2';
+    model.data.lastName = 'User2';
 
     expect(model.isDirty()).toBe(true);
     expect(model.getDirtyProperties()).toEqual([
@@ -390,7 +341,7 @@ describe('Rest Base Model', function(){
       lastName: 'User',
       username: 'test.user'
     }, true);
-    model.set('firstName', 'Test2');
+    model.data.firstName = 'Test2';
 
     unitTestMocker.setValidPutUserResponse();
     model.sync();
@@ -414,7 +365,7 @@ describe('Rest Base Model', function(){
       lastName: 'User',
       username: 'test.user'
     }, true);
-    model.get('firstName', 'Test2');
+    model.data.firstName = 'Test2';
 
     unitTestMocker.setValidPatchUserResponse();
     model.sync('PATCH');
@@ -444,8 +395,8 @@ describe('Rest Base Model', function(){
         }
       }
     });
-    model.set('firstName', 'Test2');
-    model.set('lastName', 'User2');
+    model.data.firstName = 'Test2';
+    model.data.lastName = 'User2';
 
     unitTestMocker.setValidPatchUserResponse();
     model.sync('PATCH');

@@ -139,7 +139,9 @@ angular.module('nag.rest.baseRepository', [
               data.parsedData = newObject;
 
               //set data for the return value
-              value.set(responseData, null, true);
+//              value.set(responseData, null, true);
+              value.data = responseData;
+              value._setRemoteData(responseData);
               value._setSynced(true);
               value.then = internalThen;
             }
