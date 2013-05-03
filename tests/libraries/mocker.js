@@ -178,6 +178,23 @@ angular.module('unitTestMocker', [])
 
     this.setValidUserProjectsRelationshipSingleResponse = function() {
       var httpResponseCode = 200;
+      $httpBackend.expect('GET', '/projects/234').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              project: {
+                projectId: 234,
+                name: 'Project B'
+              }
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidUserProjectsRelationshipSingleNestedResponse = function() {
+      var httpResponseCode = 200;
       $httpBackend.expect('GET', '/users/123/projects/234').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
@@ -232,7 +249,7 @@ angular.module('unitTestMocker', [])
 
     this.setValidUserProjectsRelationshipSingleUrlMultipleResponse = function() {
       var httpResponseCode = 200;
-      $httpBackend.expect('GET', '/users/123/projects/234').respond(function(method, url, data) {
+      $httpBackend.expect('GET', '/projects/234').respond(function(method, url, data) {
         return [httpResponseCode, {
           response: {
             status: 'success',
@@ -268,6 +285,60 @@ angular.module('unitTestMocker', [])
         }, {}];
       });
     };
+
+    this.setValidUserProjectTeamsMultipleNestedResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.expect('GET', '/users/123/projects/234/teams').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              teams: [{
+                id: 123,
+                name: 'Team A'
+              }, {
+                id: 124,
+                name: 'Team B'
+              }]
+            }
+          }
+        }, {}];
+      });
+    };
+
+    /*this.setValidUserProjectTeamsSingleNestedResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.expect('GET', '/users/123/projects/234/teams/123').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              team: {
+                id: 123,
+                name: 'Team A'
+              }
+            }
+          }
+        }, {}];
+      });
+    };
+
+    this.setValidTeamsSingleResponse = function() {
+      var httpResponseCode = 200;
+      $httpBackend.expect('GET', '/teams/123').respond(function(method, url, data) {
+        return [httpResponseCode, {
+          response: {
+            status: 'success',
+            data: {
+              team: {
+                id: 123,
+                name: 'Team A'
+              }
+            }
+          }
+        }, {}];
+      });
+    };*/
 
     this.flush = function() {
       $httpBackend.flush();

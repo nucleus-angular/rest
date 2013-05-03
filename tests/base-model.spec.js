@@ -1,5 +1,5 @@
 describe('Rest Base Model', function(){
-  var $httpBackend, unitTestMocker, userSchema, projectSchema, nagRestSchemaManager, nagRestBaseModel;
+  var $httpBackend, unitTestMocker, userSchema, projectSchema, teamSchema, nagRestSchemaManager, nagRestBaseModel;
 
   userSchema = {
     route: '/users',
@@ -33,9 +33,27 @@ describe('Rest Base Model', function(){
       },
       name: {}
     },
+    relations: {
+      team: {
+        resource: 'team',
+        flatten: false
+      }
+    },
     idProperty: 'projectId',
     dataListLocation: 'response.data.projects',
     dataItemLocation: 'response.data.project'
+  };
+
+  teamSchema = {
+    route: '/teams',
+    properties: {
+      id: {
+        sync: false
+      },
+      name: {}
+    },
+    dataListLocation: 'response.data.teams',
+    dataItemLocation: 'response.data.team'
   };
 
   beforeEach(module('nag.rest.baseModel'));
@@ -560,8 +578,8 @@ describe('Rest Base Model', function(){
     });
     unitTestMocker.flush();
 
-    expect(modelProjects[0]._getSelfRoute(false)).toBe('/users/123/projects/123');
-    expect(modelProjects[1]._getSelfRoute(false)).toBe('/users/123/projects/124');
+    expect(modelProjects[0]._getSelfRoute(false)).toBe('/projects/123');
+    expect(modelProjects[1]._getSelfRoute(false)).toBe('/projects/124');
   });
 
   it('should be able to get relationship by way of value', function() {
@@ -724,9 +742,144 @@ describe('Rest Base Model', function(){
     expect(modelProjects.length).toBe(2);
 
     unitTestMocker.setValidUserProjectsRelationshipSingleResponse();
-    var modelProjects = model.getRelation('job', 234);
+    modelProjects = model.getRelation('job', 234);
     unitTestMocker.flush();
 
     expect(_.isPlainObject(modelProjects)).toBe(true);
+  });
+
+  if('should not flatten the route if flattenItemRoute is set to false', function() {
+    var customProjectSchema = _.merge(projectSchema, {
+      flattenItemRoute: false
+    });
+    nagRestSchemaManager.add('user', userSchema);
+    nagRestSchemaManager.add('project', customProjectSchema);
+
+    var model = nagRestBaseModel.create('user', {
+      id: 123,
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'test.user'
+    }, true);
+
+    unitTestMocker.setValidUserProjectsRelationshipMultipleResponse();
+    var modelProjects = model.getRelation('job');
+    unitTestMocker.flush();
+
+    expect(modelProjects.length).toBe(2);
+    expect(modelProjects[0]._getSelfRoute()).toBe('/users/123/projects/123');
+    expect(modelProjects[1]._getSelfRoute()).toBe('/user/123/projects/124');
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleResponse();
+    modelProjects = model.getRelation('job', 234);
+    unitTestMocker.flush();
+
+    expect(_.isPlainObject(modelProjects)).toBe(true);
+    expect(modelProjects._getSelfRoute()).toBe('/users/123/projects/234');
+  });
+
+  it('should flatten the route for the generate model when getting a relation is flatten is set to true for the relation even if main schmea has flattenItemRoute set to false', function() {
+    var customProjectSchema = _.merge(projectSchema, {
+      flattenItemRoute: false
+    });
+    nagRestSchemaManager.add('user', userSchema);
+    nagRestSchemaManager.add('project', customProjectSchema);
+
+    var model = nagRestBaseModel.create('user', {
+      id: 123,
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'test.user'
+    }, true, {
+      relations: {
+        job: {
+          flatten: true
+        }
+      }
+    });
+
+    unitTestMocker.setValidUserProjectsRelationshipMultipleResponse();
+    var modelProjects = model.getRelation('job');
+    unitTestMocker.flush();
+
+    expect(modelProjects.length).toBe(2);
+    expect(modelProjects[0]._getSelfRoute()).toBe('/projects/123');
+    expect(modelProjects[1]._getSelfRoute()).toBe('/projects/124');
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleResponse();
+    modelProjects = model.getRelation('job', 234);
+    unitTestMocker.flush();
+
+    expect(_.isPlainObject(modelProjects)).toBe(true);
+    expect(modelProjects._getSelfRoute()).toBe('/projects/234');
+  });
+
+  it('should be able to get multi-leveled resource lists', function() {
+    nagRestSchemaManager.add('user', userSchema);
+    nagRestSchemaManager.add('project', projectSchema);
+    nagRestSchemaManager.add('team', teamSchema);
+
+    var model = nagRestBaseModel.create('user', {
+      id: 123,
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'test.user'
+    }, true, {
+      relations: {
+        job: {
+          flatten: false
+        }
+      }
+    });
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleNestedResponse();
+    var modelProject = model.getRelation('job', 234);
+    unitTestMocker.flush();
+
+    unitTestMocker.setValidUserProjectTeamsMultipleNestedResponse();
+    var projectTeams = modelProject.getRelation('team');
+    unitTestMocker.flush();
+
+    expect(projectTeams.length).toBe(2);
+    expect(projectTeams[0]._getSelfRoute()).toBe('/users/123/projects/234/teams/123');
+    expect(projectTeams[1]._getSelfRoute()).toBe('/users/123/projects/234/teams/124');
+  });
+
+  it('should be able to get multi-leveled resource lists where second level resource does not flatten but third level resource does', function() {
+    var customProjectSchema = _.merge(projectSchema, {
+      relations: {
+        team: {
+          flatten: true
+        }
+      }
+    })
+    nagRestSchemaManager.add('user', userSchema);
+    nagRestSchemaManager.add('project', customProjectSchema);
+    nagRestSchemaManager.add('team', teamSchema);
+
+    var model = nagRestBaseModel.create('user', {
+      id: 123,
+      firstName: 'Test',
+      lastName: 'User',
+      username: 'test.user'
+    }, true, {
+      relations: {
+        job: {
+          flatten: false
+        }
+      }
+    });
+
+    unitTestMocker.setValidUserProjectsRelationshipSingleNestedResponse();
+    var modelProject = model.getRelation('job', 234);
+    unitTestMocker.flush();
+
+    unitTestMocker.setValidUserProjectTeamsMultipleNestedResponse();
+    var projectTeams = modelProject.getRelation('team');
+    unitTestMocker.flush();
+
+    expect(projectTeams.length).toBe(2);
+    expect(projectTeams[0]._getSelfRoute()).toBe('/teams/123');
+    expect(projectTeams[1]._getSelfRoute()).toBe('/teams/124');
   });
 });

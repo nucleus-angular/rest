@@ -2,10 +2,8 @@ angular.module('nag.rest.schemaManager', [
   'nag.rest.config'
 ])
 .factory('nagRestSchemaManager', [
-  'nagRestModelIdProperty',
-  'nagRestResponseDataLocation',
-  'nagRestRequestFormatter',
-  function(nagRestModelIdProperty, nagRestResponseDataLocation, nagRestRequestFormatter) {
+  'nagRestConfig',
+  function(nagRestConfig) {
     var schemas;
 
     schemas = {};
@@ -29,14 +27,15 @@ angular.module('nag.rest.schemaManager', [
         if(_.isPlainObject(schema)) {
           schemas[resourceName] = _.extend({
             route: null,
-            idProperty: nagRestModelIdProperty,
+            idProperty: nagRestConfig.getModelIdProperty(),
             properties: {},
             relations: {},
-            dataListLocation: nagRestResponseDataLocation,
-            dataItemLocation: nagRestResponseDataLocation,
+            dataListLocation: nagRestConfig.getResponseDataLocation(),
+            dataItemLocation: nagRestConfig.getResponseDataLocation(),
             autoParse: true,
-            requestFormatter: nagRestRequestFormatter,
-            isArray: null
+            requestFormatter: nagRestConfig.getRequestFormatter(),
+            isArray: null,
+            flattenItemRoute: true
           }, schema);
         }
       },

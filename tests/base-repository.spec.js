@@ -1,5 +1,5 @@
 describe('Rest Base Repository', function(){
-  var $httpBackend, unitTestMocker, userSchema, projectSchema, nagRestSchemaManager, nagRestBaseRepository;
+  var $httpBackend, unitTestMocker, userSchema, projectSchema, teamSchema, nagRestSchemaManager, nagRestBaseRepository;
 
   userSchema = {
     route: '/users',
@@ -31,6 +31,18 @@ describe('Rest Base Repository', function(){
     idProperty: 'projectId',
     dataListLocation: 'response.data.projects',
     dataItemLocation: 'response.data.project'
+  };
+
+  teamSchema = {
+    route: '/teams',
+    properties: {
+      id: {
+        sync: false
+      },
+      name: {}
+    },
+    dataListLocation: 'response.data.teams',
+    dataItemLocation: 'response.data.team'
   };
 
   beforeEach(module('nag.rest.baseRepository'));

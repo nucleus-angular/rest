@@ -8,11 +8,8 @@ angular.module('nag.rest.baseModel', [
   '$q',
   '$http',
   'nagRestSchemaManager',
-  'nagRestBaseUrl',
-  'nagRestModelIdProperty',
-  'nagRestResponseDataLocation',
-  'nagRestUpdateMethod',
-  function($injector, $q, $http, nagRestSchemaManager, nagRestBaseUrl, nagRestModelIdProperty, nagRestResponseDataLocation, nagRestUpdateMethod) {
+  'nagRestConfig',
+  function($injector, $q, $http, nagRestSchemaManager, nagRestConfig) {
     var baseObject = function(isRemote) {
       var self = this;
       var nagRestBaseRepository = $injector.get('nagRestBaseRepository');
@@ -103,17 +100,20 @@ angular.module('nag.rest.baseModel', [
       this._getSelfRoute = function(withBaseRoute) {
         var selfRoute;
 
-        selfRoute = '';
         withBaseRoute = (withBaseRoute !== false);
 
-        if(withBaseRoute) {
-          selfRoute += nagRestBaseUrl;
-        }
-
-        selfRoute += schema.route;
+        selfRoute = schema.route;
 
         if(this.isRemote()) {
+          if(schema.flattenItemRoute === true) {
+            selfRoute = selfRoute.substr(selfRoute.lastIndexOf('/'));
+          }
+
           selfRoute += '/' + data[schema.idProperty];
+        }
+
+        if(withBaseRoute) {
+          selfRoute = nagRestConfig.getBaseUrl() + selfRoute;
         }
 
         return selfRoute;
@@ -177,7 +177,7 @@ angular.module('nag.rest.baseModel', [
         var deferred = $q.defer();
 
         if(!method) {
-          method = (this.isRemote() ? nagRestUpdateMethod : 'POST');
+          method = (this.isRemote() ? nagRestConfig.getUpdateMethod() : 'POST');
         }
 
         if(method === 'POST') {
@@ -245,9 +245,13 @@ angular.module('nag.rest.baseModel', [
 
         var value;
         var relationshipSchema = nagRestSchemaManager.get(schema.relations[relationName].resource);
-        if(!schema.relations[relationName].property) {
-          relationshipSchema.route = this._getSelfRoute(false) + relationshipSchema.route;
-        }
+
+        relationshipSchema.flattenItemRoute =
+        (_.isBoolean(schema.relations[relationName].flatten)
+        ? schema.relations[relationName].flatten
+        : schema.flattenItemRoute);
+
+        relationshipSchema.route = this._getSelfRoute(false) + relationshipSchema.route;
 
         var modelService = nagRestBaseRepository.create(schema.relations[relationName].resource, relationshipSchema);
 

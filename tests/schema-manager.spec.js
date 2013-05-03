@@ -1,5 +1,5 @@
 describe('Rest Schema Manager', function(){
-  var $httpBackend, unitTestMocker, schema, schema2, nagRestSchemaManager, nagRestModelIdProperty, nagRestResponseDataLocation;
+  var $httpBackend, unitTestMocker, schema, schema2, nagRestSchemaManager, nagRestConfig;
 
   schema = {
     route: '/users',
@@ -26,8 +26,7 @@ describe('Rest Schema Manager', function(){
     $httpBackend = $injector.get('$httpBackend');
     unitTestMocker = $injector.get('unitTestMocker');
     nagRestSchemaManager = $injector.get('nagRestSchemaManager');
-    nagRestModelIdProperty = $injector.get('nagRestModelIdProperty');
-    nagRestResponseDataLocation = $injector.get('nagRestResponseDataLocation');
+    nagRestConfig = $injector.get('nagRestConfig');
   }));
 
   afterEach(function() {
@@ -45,17 +44,18 @@ describe('Rest Schema Manager', function(){
           sync: false
         }
       },
-      idProperty: nagRestModelIdProperty,
+      idProperty: nagRestConfig.getModelIdProperty(),
       relations: {},
-      dataListLocation: nagRestResponseDataLocation,
-      dataItemLocation: nagRestResponseDataLocation,
+      dataListLocation: nagRestConfig.getResponseDataLocation(),
+      dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
-      isArray: null
+      isArray: null,
+      flattenItemRoute: true
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user');
 
-    expect(retrievedSchema.requestFormatter.toString().replace(/\s/g, '')).toBe('function(){}');
+    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
 
     delete retrievedSchema.requestFormatter;
 
@@ -73,12 +73,13 @@ describe('Rest Schema Manager', function(){
           sync: false
         }
       },
-      idProperty: nagRestModelIdProperty,
+      idProperty: nagRestConfig.getModelIdProperty(),
       relations: {},
-      dataListLocation: nagRestResponseDataLocation,
-      dataItemLocation: nagRestResponseDataLocation,
+      dataListLocation: nagRestConfig.getResponseDataLocation(),
+      dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
-      isArray: null
+      isArray: null,
+      flattenItemRoute: true
     };
 
     var expected2 = {
@@ -88,19 +89,20 @@ describe('Rest Schema Manager', function(){
           sync: false
         }
       },
-      idProperty: nagRestModelIdProperty,
+      idProperty: nagRestConfig.getModelIdProperty(),
       relations: {},
-      dataListLocation: nagRestResponseDataLocation,
-      dataItemLocation: nagRestResponseDataLocation,
+      dataListLocation: nagRestConfig.getResponseDataLocation(),
+      dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
-      isArray: null
+      isArray: null,
+      flattenItemRoute: true
     };
 
     var userSchema = nagRestSchemaManager.get('user');
     var projectSchema = nagRestSchemaManager.get('project');
 
-    expect(userSchema.requestFormatter.toString().replace(/\s/g, '')).toBe('function(){}');
-    expect(projectSchema.requestFormatter.toString().replace(/\s/g, '')).toBe('function(){}');
+    expect(_.isFunction(userSchema.requestFormatter)).toBe(true);
+    expect(_.isFunction(projectSchema.requestFormatter)).toBe(true);
 
     delete userSchema.requestFormatter;
     delete projectSchema.requestFormatter;
@@ -138,19 +140,20 @@ describe('Rest Schema Manager', function(){
           sync: false
         }
       },
-      idProperty: nagRestModelIdProperty,
+      idProperty: nagRestConfig.getModelIdProperty(),
       relations: {},
-      dataListLocation: nagRestResponseDataLocation,
-      dataItemLocation: nagRestResponseDataLocation,
+      dataListLocation: nagRestConfig.getResponseDataLocation(),
+      dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
-      isArray: null
+      isArray: null,
+      flattenItemRoute: true
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user', {
       route: '/users/custom'
     });
 
-    expect(retrievedSchema.requestFormatter.toString().replace(/\s/g, '')).toBe('function(){}');
+    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
 
     delete retrievedSchema.requestFormatter;
 
@@ -168,12 +171,13 @@ describe('Rest Schema Manager', function(){
         },
         test: {}
       },
-      idProperty: nagRestModelIdProperty,
+      idProperty: nagRestConfig.getModelIdProperty(),
       relations: {},
-      dataListLocation: nagRestResponseDataLocation,
-      dataItemLocation: nagRestResponseDataLocation,
+      dataListLocation: nagRestConfig.getResponseDataLocation(),
+      dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
-      isArray: null
+      isArray: null,
+      flattenItemRoute: true
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user', {
@@ -182,7 +186,7 @@ describe('Rest Schema Manager', function(){
       }
     });
 
-    expect(retrievedSchema.requestFormatter.toString().replace(/\s/g, '')).toBe('function(){}');
+    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
 
     delete retrievedSchema.requestFormatter;
 
@@ -205,17 +209,18 @@ describe('Rest Schema Manager', function(){
           sync: false
         }
       },
-      idProperty: nagRestModelIdProperty,
+      idProperty: nagRestConfig.getModelIdProperty(),
       relations: {},
-      dataListLocation: nagRestResponseDataLocation,
-      dataItemLocation: nagRestResponseDataLocation,
+      dataListLocation: nagRestConfig.getResponseDataLocation(),
+      dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
-      isArray: null
+      isArray: null,
+      flattenItemRoute: true
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user');
 
-    expect(retrievedSchema.requestFormatter.toString().replace(/\s/g, '')).toBe('function(){}');
+    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
 
     delete retrievedSchema.requestFormatter;
 
@@ -232,19 +237,20 @@ describe('Rest Schema Manager', function(){
           sync: false
         }
       },
-      idProperty: nagRestModelIdProperty,
+      idProperty: nagRestConfig.getModelIdProperty(),
       relations: {},
-      dataListLocation: nagRestResponseDataLocation,
-      dataItemLocation: nagRestResponseDataLocation,
+      dataListLocation: nagRestConfig.getResponseDataLocation(),
+      dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
-      isArray: null
+      isArray: null,
+      flattenItemRoute: true
     };
 
     var modifiedSchema = nagRestSchemaManager.get('user');
     modifiedSchema.route = '/should/not/reflect/in/stored/schema';
     var retrievedSchema = nagRestSchemaManager.get('user');
 
-    expect(retrievedSchema.requestFormatter.toString().replace(/\s/g, '')).toBe('function(){}');
+    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
 
     delete retrievedSchema.requestFormatter;
 

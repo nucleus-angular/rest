@@ -13,8 +13,14 @@ files = [
   'tests/*.js'
 ];
 
+/*preprocessors = {
+  '**//*/.js': 'coverage'
+};
+
+reporters = ['coverage'];*/
+
 autoWatch = false;
 
-browsers = ['IE', 'Chrome', 'Firefox', 'Opera'];
+browsers = ['PhantomJS'];
 
 singleRun = true;

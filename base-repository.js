@@ -7,11 +7,9 @@ angular.module('nag.rest.baseRepository', [
   '$http',
   '$q',
   'nagRestSchemaManager',
-  'nagRestBaseUrl',
-  'nagRestModelIdProperty',
+  'nagRestConfig',
   'nagRestBaseModel',
-  'nagRestResponseDataLocation',
-  function($http, $q, nagRestSchemaManager, nagRestBaseUrl, nagRestModelIdProperty, nagRestBaseModel, nagRestResponseDataLocation) {
+  function($http, $q, nagRestSchemaManager, nagRestConfig, nagRestBaseModel) {
     var baseObject = function() {
       var resourceName = null;
       var schema = {};
@@ -40,7 +38,7 @@ angular.module('nag.rest.baseRepository', [
         withBaseRoute = (withBaseRoute === false ? false : true);
 
         if(withBaseRoute) {
-          selfRoute += nagRestBaseUrl;
+          selfRoute += nagRestConfig.getBaseUrl();
         }
 
         selfRoute += schema.route;
@@ -96,7 +94,11 @@ angular.module('nag.rest.baseRepository', [
         if(_.isNumber(params) || _.isString(params)) {
           isArray = false;
 
-          httpConfig.url += '/' + params;
+          if(schema.flattenItemRoute === true) {
+            url = url.substr(url.lastIndexOf('/'));
+          }
+
+          httpConfig.url = url + '/' + params;
         }
 
         isArray = this._getIsArray(isArray);
@@ -104,10 +106,6 @@ angular.module('nag.rest.baseRepository', [
         var value = (isArray === true ? [] : self.create());
         var deferred = $q.defer();
         value.then = deferred.promise.then;
-
-        /*httpConfig = _.extend({
-         method: 'GET'
-         }, httpConfig);*/
 
         $http(httpConfig)
         .success(function(response) {
