@@ -50,7 +50,7 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: true
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user');
@@ -79,7 +79,7 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: true
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
     };
 
     var expected2 = {
@@ -95,7 +95,7 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: true
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
     };
 
     var userSchema = nagRestSchemaManager.get('user');
@@ -146,7 +146,7 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: true
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user', {
@@ -177,7 +177,7 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: true
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user', {
@@ -215,7 +215,7 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: true
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user');
@@ -243,7 +243,7 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: true
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
     };
 
     var modifiedSchema = nagRestSchemaManager.get('user');
