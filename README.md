@@ -131,6 +131,10 @@ angular.module('app', ['nag-rest'])
 
 # Basic Guide
 
+This is just some basic documentation, hopefully enough to get you starting and running with this library.  If you are confused about anything or want to dig deeper, I encourage you to either dig through the unit tests or even the source code.  I can't tell you how much I have learned about angular or unit testing with angular by digging through their source code and unit tests.
+
+If you find anything incorrect in the documentation or find something in the code that you think needs to be documented, please submit and issue in the github tracker.
+
 ## Querying REST API results
 
 Unless otherwise specifically stated, any method that makes a request to the api for data, whether returning one or multiple records, can be processed in 2 different ways
