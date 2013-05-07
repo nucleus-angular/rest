@@ -1,6 +1,6 @@
 {
   "name": "nucleus-angular-rest",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "dependencies": {
     "string-json-parser": "latest",
     "es5-shim": "2.0.x"
