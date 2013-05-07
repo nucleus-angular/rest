@@ -13,11 +13,11 @@ files = [
   'tests/*.js'
 ];
 
-/*preprocessors = {
-  '**//*/.js': 'coverage'
+preprocessors = {
+  '**/*.js': 'coverage'
 };
 
-reporters = ['coverage'];*/
+reporters = ['dots', 'coverage'];
 
 autoWatch = false;
 

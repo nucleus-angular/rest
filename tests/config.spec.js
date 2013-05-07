@@ -8,46 +8,60 @@ describe('Rest Config', function(){
   }));
 
   it('should have default values', inject(function(nagRestConfig) {
-    expect(nagRestConfig.getBaseUrl()).toEqual('');
-    expect(nagRestConfig.getResponseDataLocation()).toEqual('');
-    expect(nagRestConfig.getModelIdProperty()).toEqual('id');
-    expect(nagRestConfig.getUpdateMethod()).toEqual('PUT');
+    expect(nagRestConfig.getStrictMode()).toBe(false);
+    expect(nagRestConfig.getBaseUrl()).toBe('');
+    expect(nagRestConfig.getResponseDataLocation()).toBe('');
+    expect(nagRestConfig.getModelIdProperty()).toBe('id');
+    expect(nagRestConfig.getUpdateMethod()).toBe('PUT');
+    expect(nagRestConfig.getFlattenItemRoute()).toBe(false);
     expect(_.isFunction(nagRestConfig.getRequestFormatter())).toBe(true);
   }));
 
-  it('should be able set base url', inject(function(nagRestConfig) {
+  it('should be able get/set base url', inject(function(nagRestConfig) {
     var value = '/api';
     provider.setBaseUrl(value);
 
-    expect(nagRestConfig.getBaseUrl()).toEqual(value);
+    expect(nagRestConfig.getBaseUrl()).toBe(value);
   }));
 
-  it('should be able set response data location', inject(function(nagRestConfig) {
+  it('should be able get/set response data location', inject(function(nagRestConfig) {
     var value = 'data.data';
     provider.setResponseDataLocation(value);
 
-    expect(nagRestConfig.getResponseDataLocation()).toEqual(value);
+    expect(nagRestConfig.getResponseDataLocation()).toBe(value);
   }));
 
-  it('should be able set model id property', inject(function(nagRestConfig) {
+  it('should be able get/set model id property', inject(function(nagRestConfig) {
     var value = 'uid';
     provider.setModelIdProperty(value);
 
-    expect(nagRestConfig.getModelIdProperty()).toEqual(value);
+    expect(nagRestConfig.getModelIdProperty()).toBe(value);
   }));
 
-  it('should be able set update method', inject(function(nagRestConfig) {
+  it('should be able get/set update method', inject(function(nagRestConfig) {
     var value = 'PATCH';
     provider.setUpdateMethod(value);
 
-    expect(nagRestConfig.getUpdateMethod()).toEqual(value);
+    expect(nagRestConfig.getUpdateMethod()).toBe(value);
   }));
 
-  it('should be able set request formatter', inject(function(nagRestConfig) {
+  it('should be able get/set request formatter', inject(function(nagRestConfig) {
     var value = function(){return 'test'};
     provider.setRequestFormatter(value);
 
-    expect((nagRestConfig.getRequestFormatter())()).toEqual('test');
+    expect((nagRestConfig.getRequestFormatter())()).toBe('test');
+  }));
+
+  it('should be able get/set static mode', inject(function(nagRestConfig) {
+    provider.setStrictMode(true);
+
+    expect(nagRestConfig.getStrictMode()).toBe(true);
+  }));
+
+  it("should be able get/set flatten item route", inject(function(nagRestConfig) {
+    provider.setFlattenItemRoute(true);
+
+    expect(nagRestConfig.getFlattenItemRoute()).toBe(true);
   }));
 
   it('should not be able to set request formatter to anything except a function', inject(function(nagRestConfig) {

@@ -2,6 +2,14 @@
 
 Each change log are assumed to be accompanied by associated unit test and documentation updates.
 
+## 0.3.0
+
+* IE 8 support dropped
+* Completely rewrote the foundation for models/repositories (backward compatible broken)
+* Karma configuration file update (phantom configurations now include code coverage)
+* Flatten url logic now accounts for the base url
+* Added strict mode configuration though not being used anywhere yet
+
 ## 0.2.3
 
 * Config values are now using a provider that can be configured in a module.config() instead of using .values()

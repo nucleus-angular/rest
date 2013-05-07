@@ -15,6 +15,8 @@ files = [
 
 autoWatch = false;
 
+reporters = ['dots'];
+
 browsers = ['IE', 'Chrome', 'Firefox', 'Opera'];
 
 singleRun = true;
