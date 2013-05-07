@@ -1,5 +1,5 @@
 describe('Rest Model Factory', function(){
-  var $httpBackend, unitTestMocker, userSchema, projectSchema, teamSchema, emailSchema, nagRestSchemaManager, nagRestModelFactory, nagRestConfig;
+  var $httpBackend, $injector, unitTestMocker, userSchema, projectSchema, teamSchema, emailSchema, nagRestSchemaManager, nagRestModelFactory, nagRestConfig;
 
   userSchema = {
     route: '/users',
@@ -74,7 +74,8 @@ describe('Rest Model Factory', function(){
   beforeEach(module('nag.rest.model'));
   beforeEach(module('unitTestMocker'));
 
-  beforeEach(inject(function($injector) {
+  beforeEach(inject(function(_$injector_) {
+    $injector = _$injector_;
     $httpBackend = $injector.get('$httpBackend');
     unitTestMocker = $injector.get('unitTestMocker');
     nagRestSchemaManager = $injector.get('nagRestSchemaManager');
@@ -1119,6 +1120,51 @@ describe('Rest Model Factory', function(){
     expect(project.mngr.toJson()).toEqual({
       projectId: 1,
       name: 'Project 1'
+    });
+  });
+
+  /*******************************************************************************************************************/
+  /***** NG-MODEL BINDING ********************************************************************************************/
+  /*******************************************************************************************************************/
+
+  describe("should work properly with ng-model", function() {
+    var $scope, $compile, element, user;
+
+    beforeEach(function() {
+      user = nagRestModelFactory.create('user', {
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'john.doe'
+      });
+      $scope = $injector.get('$rootScope');
+      $scope.user = user;
+      $compile = $injector.get('$compile');
+      element = $compile('<form name="form">' +
+        '<input id="first-name" type="text" ng-model="user.firstName" />' +
+        '<input id="last-name" type="text" ng-model="user.lastName" />' +
+        '<input id="username" type="text" ng-model="user.username" />' +
+        '</form>'
+      )($scope);
+      $scope.$digest();
+    });
+
+    it("should be able to bing to form element directly with ng-model", function() {
+      expect(element.find('#first-name').val()).toBe('John');
+      expect(element.find('#last-name').val()).toBe('Doe');
+      expect(element.find('#username').val()).toBe('john.doe');
+    });
+
+    it("should have the model's data be updated when a binding form element is updated", function() {
+      element.find('#first-name').controller('ngModel').$setViewValue('John2');
+
+      expect($scope.user.firstName).toBe('John2');
+    });
+
+    it("should have the form's data be updated when a binding form element's scope value is updated", function() {
+      $scope.user.lastName = 'Doe2';
+      $scope.$digest();
+
+      expect(element.find('#last-name').val()).toBe('Doe2');
     });
   });
 });
