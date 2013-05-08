@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "0.10"
+
+before_script:
+  - sh -e /etc/init.d/xvfb start
+  - bower install
+  - npm install -g karma
+  - sudo apt-get install phantomjs
+
+script:
+  - karma start karma/unit-tests-unstable.phantom.js
