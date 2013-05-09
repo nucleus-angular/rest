@@ -2,8 +2,7 @@
   "name": "nucleus-angular-rest",
   "version": "0.3.0",
   "dependencies": {
-    "string-json-parser": "latest",
-    "es5-shim": "2.0.x"
+    "string-json-parser": "latest"
   },
   "devDependencies": {
     "lodash": "1.2.x",

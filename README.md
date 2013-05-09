@@ -76,12 +76,14 @@ Each change log are assumed to be accompanied by associated unit test and docume
 
 # Testing
 
-There are a suite of unit tests for each thought of use case.  The unit test are execute against both the stable (1.0.6) and unstable (1.1.4) angular branches.  Currently these are the following browsers/oses that the unit tests have been executed on (more to follow as I get all the local environments setup or connect with Travis CI):
+There are a suite of unit tests for each thought of use case.  The unit test are execute against both the stable (1.0.6) and unstable (1.1.4) angular branches.  Travis CI use PhantomJS to run it's test but tests are also executed on the following browsers/OSes:
 
-* Chrome (Mac OS X 10.8.x)
-* FireFox (Mac OS X 10.8.x)
+* Chrome (Mac OS X 10.8.x, Windows 7)
+* FireFox (Mac OS X 10.8.x, Window 7)
 * Safari (Mac OS X 10.8.x)
-* Opera (Mac OS X 10.8.x)
+* Opera (Mac OS X 10.8.x, Windows 7)
+* IE 9 (Windows 7)
+* IE 10 (Windows 7)
 
 # Usage
 
