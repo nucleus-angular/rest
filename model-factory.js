@@ -20,6 +20,7 @@ angular.module('nag.rest.model', [
       remoteFlag = remoteFlag || false;
 
       extendData = function(newData, setRemoteFlag) {
+        newData = nagRestSchemaManager.normalizeData(schema, newData);
         _.merge(data, newData);
 
         if(setRemoteFlag === true) {
@@ -188,6 +189,7 @@ angular.module('nag.rest.model', [
               requestData = getSyncData('update');
             }
 
+            requestData = nagRestSchemaManager.normalizeData(schema, requestData, 'outgoing');
             var finalDataFormat = self.mngr.schema.requestFormatter(requestData) || requestData;
 
             $http({

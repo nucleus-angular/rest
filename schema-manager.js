@@ -42,6 +42,21 @@ angular.module('nag.rest.schemaManager', [
 
       remove: function(resourceName) {
         delete schemas[resourceName];
+      },
+
+      normalizeData: function(schema, data, way) {
+        var normalizedData = {};
+        way = (way === 'outgoing' ? 'outgoing' : 'incoming');
+
+        _.forEach(schema.properties, function(value, key) {
+          var remoteProperty = (!_.isUndefined(value.remoteProperty) && !_.isNull(value.remoteProperty) ? value.remoteProperty : key);
+          var normalizedKey = (way === 'outgoing' ? remoteProperty : key);
+          var noneNormalizedKey = (way === 'outgoing' ? key : remoteProperty);
+
+          normalizedData[normalizedKey] = data[noneNormalizedKey] || data[key];
+        });
+
+        return normalizedData;
       }
     };
   }
