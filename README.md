@@ -433,6 +433,49 @@ nagRestSchemaManager.remove('user');
 var pulledUserSchema = nagRestSchemaManager.get('user');
 ```
 
+* normalizeData(schema, data, way) - converts the data based on the way which can be either 'incoming' or 'outgoing' (defaults to 'incoming')
+
+```javascript
+var schema = {
+  route: '/users',
+  properties: {
+    id: {
+      remoteProperty: 'IdenTiFIer'
+    },
+    firstName: {
+      remoteProperty: 'firstname'
+    },
+    lastName: {
+      remoteProperty: 'LAST_NAME'
+    }
+  }
+};
+
+// returns:
+// {
+//   id: 1,
+//   firstName: 'John',
+//   lastName: 'Doe'
+// }
+var incomingDataNormalized = nagRestSchemaManager.normalizeData(schema, {
+  IdenTiFIer: 1,
+  firstname: 'John',
+  LAST_NAME: 'Doe'
+});
+
+// returns:
+// {
+//   IdenTiFIer: 1,
+//   firstname: 'John',
+//   LAST_NAME: 'Doe'
+// }
+var outgoingDataNormalized = nagRestSchemaManager.normalizeData(schema, {
+  id: 1,
+  firstName: 'John',
+  lastName: 'Doe'
+}, 'outgoing');
+```
+
 ### Repository Factory
 
 The Repository is the main way to create models and get data from the REST API.  You can create an instance of a Repository by using the nagRestRepositoryFactory service.  That has the following API:
@@ -958,6 +1001,7 @@ user.firstName;
       * false - don't sync ever (can not set data)
       * 'create' - only save on create (can only set data when model is not synced)
       * 'update' - only save on update (con only set data when model is synced)
+    * remoteProperty: If you want the name of the property of the model to be different from the property that the remote api gives, give the remote property name here and it will normalize the property name both incoming and outgoing.
 * **relations**: This is an object where the key is the name of the resource and the value its configuration
   * resource: The resourceName this relation links to
   * flatten: Used to set the flattenItemRoute when retrieving models using getRelation().  if not set, flattenItemRoute will be set to the value of the flattenItemRoute of the resource schema the relation belongs to
@@ -968,7 +1012,7 @@ user.firstName;
 * **autoParse: (default: true)**
   * Whether or not to automatically parse the REST API response
 * **requestFormatter: (default: nagRestConfig.getRequestFormatter())**
-  * A function that can wrap the model data in a specific format before sending it to the REST API.  This function take one parameter and that in the model data that is being sent.
+  * A function that can wrap the model data in a specific format before sending it to the REST API.  This function take one parameter and that in the model data that is being sent.  The data passed into this callback has already been normalized to the proper format the REST API is expecting for the names of the property of the model.
 * **isArray**: (default: null)
   * Determines whether all requests are or are not arrays when retrieving data.  This can be override on a call by call level with the forceIsArray() method on models/repositories
 * **flattenItemRoute**: (default: nagRestConfig.getFlattenItemRoute())

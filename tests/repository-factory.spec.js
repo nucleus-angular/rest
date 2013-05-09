@@ -713,4 +713,57 @@ describe('Rest Base Repository', function(){
       managerId: null
     });
   });
+
+  /*******************************************************************************************************************/
+  /***** DATA NORMALIZATION ******************************************************************************************/
+  /*******************************************************************************************************************/
+
+  describe("Data Normalization", function() {
+    it("should be able to convert incoming data to a different format/name", function() {
+      var repository = nagRestRepositoryFactory.create('user', {
+        properties: {
+          firstName: {
+            remoteProperty: 'first_name'
+          },
+          lastName: {
+            remoteProperty: 'lastname'
+          },
+          username: {
+            remoteProperty: 'USERNAME'
+          },
+          managerId: {
+            remoteProperty: 'MANAGER_IDENTIFIER'
+          }
+        }
+      });
+
+      $httpBackend.expect('GET', '/users/1').respond(function(method, url, data) {
+        return [200, {
+          response: {
+            status: 'success',
+            data: {
+              user: {
+                id: 1,
+                first_name: 'John',
+                lastname: 'Doe',
+                USERNAME: 'john.doe',
+                MANAGER_IDENTIFIER: null
+              }
+            }
+          }
+        }, {}];
+      });
+      var user = repository.mngr.find(1);
+      $httpBackend.flush();
+
+      expect(user.firstName).toBe('John');
+      expect(user.mngr.toJson()).toEqual({
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'john.doe',
+        managerId: null
+      });
+    });
+  });
 });

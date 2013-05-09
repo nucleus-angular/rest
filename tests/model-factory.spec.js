@@ -1127,7 +1127,7 @@ describe('Rest Model Factory', function(){
   /***** NG-MODEL BINDING ********************************************************************************************/
   /*******************************************************************************************************************/
 
-  describe("should work properly with ng-model", function() {
+  describe("Data Binding", function() {
     var $scope, $compile, element, user;
 
     beforeEach(function() {
@@ -1165,6 +1165,53 @@ describe('Rest Model Factory', function(){
       $scope.$digest();
 
       expect(element.find('#last-name').val()).toBe('Doe2');
+    });
+  });
+
+  describe("Data Normalization", function() {
+    it("should be able to normalize the data from the model to the format the API is expecting", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            remoteProperty: 'first_name'
+          },
+          lastName: {
+            remoteProperty: 'lastname'
+          },
+          username: {
+            remoteProperty: 'USERNAME'
+          },
+          managerId: {
+            remoteProperty: 'MANAGER_IDENTIFIER'
+          }
+        }
+      });
+
+      user.mngr.extendData({
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'john.doe',
+        managerId: 100
+      });
+
+      $httpBackend.expect('POST', '/users', '{"first_name":"John","lastname":"Doe","USERNAME":"john.doe","MANAGER_IDENTIFIER":100}').respond(function(method, url, data) {
+        return [200, {
+          response: {
+            status: 'success',
+            data: {
+              user: {
+                id: 1,
+                firstName: 'John',
+                lastName: 'Doe',
+                username: 'john.doe',
+                managerId: null
+              }
+            }
+          }
+        }, {}];
+      });
+      user.mngr.sync();
+      $httpBackend.flush();
     });
   });
 });

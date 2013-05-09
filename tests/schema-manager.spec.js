@@ -1,5 +1,5 @@
 describe('Rest Schema Manager', function(){
-  var $httpBackend, unitTestMocker, schema, schema2, nagRestSchemaManager, nagRestConfig;
+  var $httpBackend, unitTestMocker, schema, schema2, schema3, nagRestSchemaManager, nagRestConfig;
 
   schema = {
     route: '/users',
@@ -15,6 +15,21 @@ describe('Rest Schema Manager', function(){
     properties: {
       projectId: {
         sync: false
+      }
+    }
+  };
+
+  schema3 = {
+    route: '/users',
+    properties: {
+      id: {
+        remoteProperty: 'IdenTiFIer'
+      },
+      firstName: {
+        remoteProperty: 'firstname'
+      },
+      lastName: {
+        remoteProperty: 'LAST_NAME'
       }
     }
   };
@@ -255,5 +270,43 @@ describe('Rest Schema Manager', function(){
     delete retrievedSchema.requestFormatter;
 
     expect(retrievedSchema).toEqual(expected);
+  });
+
+  describe("Data Normalization", function() {
+    it("should be able to normalize data incoming", function() {
+      expect(nagRestSchemaManager.normalizeData(schema3, {
+        IdenTiFIer: 1,
+        firstname: 'John',
+        LAST_NAME: 'Doe'
+      })).toEqual({
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe'
+      });
+    });
+
+    it("should be able to set data with properties already normalized even if the configuration has remoteProperty configured", function() {
+      expect(nagRestSchemaManager.normalizeData(schema3, {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe'
+      })).toEqual({
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe'
+      });
+    });
+
+    it("should be able to normalize the data outgoing to be formatted like the API expects", function() {
+      expect(nagRestSchemaManager.normalizeData(schema3, {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe'
+      }, 'outgoing')).toEqual({
+        IdenTiFIer: 1,
+        firstname: 'John',
+        LAST_NAME: 'Doe'
+      });
+    });
   });
 });
