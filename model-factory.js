@@ -12,12 +12,12 @@ angular.module('nag.rest.model', [
   function($injector, $q, $http, nagRestSchemaManager, nagRestConfig) {
     var BaseModel = function(resourceName, initialData, remoteFlag, overrideSchemaOptions) {
       var self, data, originalData, schema, modelProperties, isArray, extendData, deletedFlag;
+      initialData = initialData || {};
       self = this;
       data = {};
       originalData = {};
       modelProperties = {}
       deletedFlag = false;
-      remoteFlag = remoteFlag || false;
 
       extendData = function(newData, setRemoteFlag) {
         newData = nagRestSchemaManager.normalizeData(schema, newData);
@@ -31,6 +31,7 @@ angular.module('nag.rest.model', [
       //initialization code
       overrideSchemaOptions = overrideSchemaOptions || {};
       schema = nagRestSchemaManager.get(resourceName, overrideSchemaOptions);
+      extendData(initialData, remoteFlag);
 
       //setup properties for object
       var modelProperties = {};
@@ -57,16 +58,6 @@ angular.module('nag.rest.model', [
       }, this);
 
       Object.defineProperties(this, modelProperties);
-
-      //setup initial data
-      //initialData = nagRestSchemaManager.normalizeData(schema, initialData);
-      if(_.isObject(initialData)) {
-        _.forEach(initialData, function(value, key) {
-          if(_.has(schema.properties, key)) {
-            data[key] = value;
-          }
-        }, this);
-      }
 
       //setup the manager (mngr) property
       this.mngr = {};
