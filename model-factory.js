@@ -59,7 +59,8 @@ angular.module('nag.rest.model', [
       Object.defineProperties(this, modelProperties);
 
       //setup initial data
-      if(_.isPlainObject(initialData)) {
+      //initialData = nagRestSchemaManager.normalizeData(schema, initialData);
+      if(_.isObject(initialData)) {
         _.forEach(initialData, function(value, key) {
           if(_.has(schema.properties, key)) {
             data[key] = value;
