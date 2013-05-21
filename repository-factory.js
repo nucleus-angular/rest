@@ -66,7 +66,7 @@ angular.module('nag.rest.repository', [
 
             var idPropertyValue;
             var isArray = true;
-            var url = self.mngr.route;
+            var url = self.mngr.fullRoute;
 
             var httpConfig = {
               url: url,
@@ -134,7 +134,6 @@ angular.module('nag.rest.repository', [
                   data.parsedData = newObject;
 
                   //set data for the return value
-                  value.mngr.extendData(responseData);
                   value.mngr.extendData(responseData, true);
                   value.then = internalThen;
                 }
