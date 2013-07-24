@@ -1,3 +1,9 @@
+/**
+ * Handles configuration for the rest system
+ *
+ * @module nag.rest.config
+ * @ngservice nagRestConfig
+ */
 angular.module('nag.rest.config', [])
 .provider('nagRestConfig', function() {
   var strictMode = false;
@@ -41,33 +47,144 @@ angular.module('nag.rest.config', [])
   return {
     $get: function() {
       return {
+        /**
+         * Retrieve strict mode
+         *
+         * @method getStrictMode
+         *
+         * @returns {boolean} Whether or not strict mode is enabled
+         */
         getStrictMode: function() {
           return strictMode;
         },
+
+        /**
+         * Retrieve the base url for all REST remote calls
+         *
+         * @method getBaseUrl
+         *
+         * @returns {string} Base url for all REST remote calls
+         */
         getBaseUrl: function() {
           return baseUrl;
         },
+
+        /**
+         * Retrieve the default location in the response for where the data will be located
+         *
+         * @method getResponseDataLocation
+         *
+         * @returns {string} Default location in the response for where the data will be located
+         */
         getResponseDataLocation: function() {
           return responseDataLocation;
         },
+
+        /**
+         * Retrieve the default property to use as the model id
+         *
+         * @method getModelIdProperty
+         *
+         * @returns {string}
+         */
         getModelIdProperty: function() {
           return modelIdProperty;
         },
+
+        /**
+         * Retrieve the default HTTP method to use when send data through the REST call
+         *
+         * @method getUpdateMethod
+         *
+         * @returns {string}
+         */
         getUpdateMethod: function() {
           return updateMethod;
         },
+
+        /**
+         * Retrieve the default callback function to use to format the data before sending it through the REST call
+         *
+         * @method getRequestFormatter
+         *
+         * @returns {function}
+         */
         getRequestFormatter: function() {
           return requestFormatter;
         },
+
+        /**
+         * Retrieve the default value to use for setting flattenItemRoute for REST models
+         *
+         * @method getFlattenItemRoute
+         *
+         * @returns {boolean}
+         */
         getFlattenItemRoute: function() {
           return flattenItemRoute;
         },
+
+        /**
+         * Set strict mode
+         *
+         * @method setStrictMode
+         *
+         * @param {boolean} Whether or not to enable strict mode
+         */
         setStrictMode: setStrictMode,
+
+        /**
+         * Set default base url for REST remote calls
+         *
+         * @method setBaseUrl
+         *
+         * @param {string} Base url for REST remote calls
+         */
         setBaseUrl: setBaseUrl,
+
+        /**
+         * Set the default location for where the data will be located in the REST response
+         *
+         * @method setResponseDataLocation
+         *
+         * @param {string} Default location with data is in the REST response
+         */
         setResponseDataLocation: setResponseDataLocation,
+
+        /**
+         * Set the default property to use as the model id
+         *
+         * @method setModelIdProperty
+         *
+         * @param {string} Default proeprty to use as model id
+         */
         setModelIdProperty: setModelIdProperty,
+
+        /**
+         * Set the default tHTTP method to use when sending data with the REST call
+         *
+         * @method setUpdateMethod
+         *
+         * @param {function}
+         */
         setUpdateMethod: setUpdateMethod,
+
+        /**
+         * Set the default callback to use to format the data before sending it through the REST call
+         *
+         * @method setRequestFormatter
+         *
+         * @param {function} Default callback to use to format data before sending it through the REST call
+         */
         setRequestFormatter: setRequestFormatter,
+
+        /**
+         * Set the default value for model's flattenItemRoute option
+         *
+         * @method setFlattenItemRoute
+         *
+         * @param {boolean} Whether or not to flatten item routes for models by default
+         */
         setFlattenItemRoute: setFlattenItemRoute
       }
     },

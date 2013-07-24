@@ -1,3 +1,9 @@
+/**
+ * Manages all the schemas for the rest system
+ *
+ * @module nag.rest.schemaManager
+ * @ngservice nagRestSchemaManager
+ */
 angular.module('nag.rest.schemaManager', [
   'nag.rest.config'
 ])
@@ -9,6 +15,16 @@ angular.module('nag.rest.schemaManager', [
     schemas = {};
 
     return {
+      /**
+       * Retrieve a schema
+       *
+       * @method get
+       *
+       * @param {string} resourceName The name of the schema you want, referred to as a resource name
+       * @param {object} [overrideSchemaOptions] Overriding options to be applied to the resulting schema
+       *
+       * @returns {object} Schema based on the requested resource
+       */
       get: function(resourceName, overrideSchemaOptions) {
         if(_.isPlainObject(schemas[resourceName])) {
           if(overrideSchemaOptions) {
@@ -22,6 +38,14 @@ angular.module('nag.rest.schemaManager', [
         }
       },
 
+      /**
+       * Add a schema
+       *
+       * @method add
+       *
+       * @param {string} resourceName Unique string to identify this schema, referred to as a resource name
+       * @param {object} schema Schema options
+       */
       add: function(resourceName, schema) {
         //make sure the schema is defined as an object
         if(_.isPlainObject(schema)) {
@@ -40,10 +64,27 @@ angular.module('nag.rest.schemaManager', [
         }
       },
 
+      /**
+       * Removing a schema
+       *
+       * @method remove
+       *
+       * @param {string} resourceName Name of the schema to remove, referred to as a resource name
+       */
       remove: function(resourceName) {
         delete schemas[resourceName];
       },
 
+      /**
+       * Normalize a data object using the configuration of a schema
+       *
+       * @method normalizeData
+       *
+       * @param {string} schema Schema name to use for normalization, referred to as a resource name
+       * @param {object} data Data to normalize
+       * @param {string} way Which way to normalize or how the data is traveling (either 'outgoing' or 'incoming')
+       * @returns {object} Normalized data based on the schema
+       */
       normalizeData: function(schema, data, way) {
         var normalizedData = {};
         way = (way === 'outgoing' ? 'outgoing' : 'incoming');

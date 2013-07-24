@@ -1214,4 +1214,38 @@ describe('Rest Model Factory', function(){
       $httpBackend.flush();
     });
   });
+
+  describe("Property getter/setter functionality", function() {
+    it("should be able to set custom getter function for properties", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            getter: function(value) {
+              return '#' + value + '!';
+            }
+          }
+        }
+      });
+
+      user.firstName = 'Test';
+
+      expect(user.firstName).toBe('#Test!');
+    });
+
+    it("should be able to set custom setter function for properties", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            setter: function(value) {
+              return '#' + value + '!';
+            }
+          }
+        }
+      });
+
+      user.firstName = 'Test';
+
+      expect(user.firstName).toBe('#Test!');
+    });
+  });
 });
