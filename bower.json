@@ -1,8 +1,9 @@
 {
   "name": "nucleus-angular-rest",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "dependencies": {
-    "string-json-parser": "latest"
+    "string-json-parser": "latest",
+    "nucleus-angular-data-validation": "latest"
   },
   "devDependencies": {
     "lodash": "1.2.x",

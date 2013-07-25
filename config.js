@@ -4,7 +4,9 @@
  * @module nag.rest.config
  * @ngservice nagRestConfig
  */
-angular.module('nag.rest.config', [])
+angular.module('nag.rest.config', [
+  'nag.dataValidation'
+])
 .provider('nagRestConfig', function() {
   var strictMode = false;
   var baseUrl = '';
@@ -13,6 +15,7 @@ angular.module('nag.rest.config', [])
   var updateMethod = 'PUT';
   var requestFormatter = function(){};
   var flattenItemRoute = false;
+  var validateOnSync = true;
 
   var setStrictMode = function(value) {
     strictMode = value;
@@ -28,20 +31,24 @@ angular.module('nag.rest.config', [])
 
   var setModelIdProperty = function(value) {
     modelIdProperty = value;
-  }
+  };
 
   var setUpdateMethod = function(value) {
     updateMethod = value;
-  }
+  };
 
   var setFlattenItemRoute = function(value) {
     flattenItemRoute = value;
-  }
+  };
 
   var setRequestFormatter = function(value) {
     if(_.isFunction(value)) {
       requestFormatter = value;
     }
+  };
+
+  var setValidateOnSync = function(value) {
+    validateOnSync = value;
   };
 
   return {
@@ -125,6 +132,17 @@ angular.module('nag.rest.config', [])
         },
 
         /**
+         * Retreives whether or not models should be validated when syncing
+         *
+         * @method getValidateOnSync
+         *
+         * @returns {boolean}
+         */
+        getValidateOnSync: function() {
+          return validateOnSync;
+        },
+
+        /**
          * Set strict mode
          *
          * @method setStrictMode
@@ -156,7 +174,7 @@ angular.module('nag.rest.config', [])
          *
          * @method setModelIdProperty
          *
-         * @param {string} Default proeprty to use as model id
+         * @param {string} Default property to use as model id
          */
         setModelIdProperty: setModelIdProperty,
 
@@ -185,7 +203,16 @@ angular.module('nag.rest.config', [])
          *
          * @param {boolean} Whether or not to flatten item routes for models by default
          */
-        setFlattenItemRoute: setFlattenItemRoute
+        setFlattenItemRoute: setFlattenItemRoute,
+
+        /**
+         * Set whether or not models should be validated when syncing
+         *
+         * @method setValidateOnSync
+         *
+         * @param {boolean} Whether or not to flatten item routes for models by default
+         */
+        setValidateOnSync: setValidateOnSync
       }
     },
     setStrictMode: setStrictMode,
@@ -194,6 +221,7 @@ angular.module('nag.rest.config', [])
     setModelIdProperty: setModelIdProperty,
     setUpdateMethod: setUpdateMethod,
     setRequestFormatter: setRequestFormatter,
-    setFlattenItemRoute: setFlattenItemRoute
+    setFlattenItemRoute: setFlattenItemRoute,
+    setValidateOnSync: setValidateOnSync
   }
 });

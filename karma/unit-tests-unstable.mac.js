@@ -7,6 +7,7 @@ files = [
   'components/lodash/dist/lodash.legacy.js',
   'components/jquery/jquery.js',
   'components/unstable-angular-complete/angular.js',
+  'components/nucleus-angular-data-validation/data-validation.js',
   'components/unstable-angular-complete/angular-mocks.js',
   'tests/libraries/mocker.js',
   '*.js',

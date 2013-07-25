@@ -14,6 +14,7 @@ describe('Rest Config', function(){
     expect(nagRestConfig.getModelIdProperty()).toBe('id');
     expect(nagRestConfig.getUpdateMethod()).toBe('PUT');
     expect(nagRestConfig.getFlattenItemRoute()).toBe(false);
+    expect(nagRestConfig.getValidateOnSync()).toBe(true);
     expect(_.isFunction(nagRestConfig.getRequestFormatter())).toBe(true);
   }));
 
@@ -70,5 +71,11 @@ describe('Rest Config', function(){
     provider.setRequestFormatter('string');
 
     expect(_.isFunction(nagRestConfig.getRequestFormatter())).toBe(true);
+  }));
+
+  it("should be able get/set validate on sync", inject(function(nagRestConfig) {
+    provider.setValidateOnSync(false);
+
+    expect(nagRestConfig.getValidateOnSync()).toBe(false);
   }));
 });

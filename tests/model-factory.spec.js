@@ -1248,4 +1248,485 @@ describe('Rest Model Factory', function(){
       expect(user.firstName).toBe('#Test!');
     });
   });
+
+  describe("Data Validation", function() {
+    it("should return true when attempting to validate a property that has no validation", function() {
+      var user = nagRestModelFactory.create('user');
+
+      expect(user.mngr.validate('firstName')).toBe(true);
+    });
+
+    it("should be able to validate based on a stored validation rule 'required' to false", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              required: {}
+            }
+          }
+        }
+      });
+
+      expect(user.mngr.validate('firstName')).toEqual({
+        required: "is required"
+      });
+    });
+
+    it("should be able to validate based on a stored validation rule 'required' to true", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              required: {}
+            }
+          }
+        }
+      });
+
+      user.firstName = 'John';
+
+      expect(user.mngr.validate('firstName')).toEqual(true);
+    });
+
+    it("should be able to validate based on a stored validation rule 'email' to false", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              email: {}
+            }
+          }
+        }
+      });
+
+      expect(user.mngr.validate('firstName')).toEqual({
+        email: "must be an email"
+      });
+    });
+
+    it("should be able to validate based on a stored validation rule 'email' to true", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              email: {}
+            }
+          }
+        }
+      });
+
+      user.firstName = 'test@example.com';
+
+      expect(user.mngr.validate('firstName')).toEqual(true);
+    });
+
+    it("should be able to validate based on a stored validation rule 'min' to false", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              min: {
+                context: {
+                  min: 10
+                }
+              }
+            }
+          }
+        }
+      });
+
+      expect(user.mngr.validate('firstName')).toEqual({
+        min: "must be 10 or higher"
+      });
+    });
+
+    it("should be able to validate based on a stored validation rule 'min' to true", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              min: {
+                context: {
+                  min: 10
+                }
+              }
+            }
+          }
+        }
+      });
+
+      user.firstName = 20;
+
+      expect(user.mngr.validate('firstName')).toEqual(true);
+    });
+
+    it("should be able to validate based on a stored validation rule 'max' to false", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              max: {
+                context: {
+                  max: 10
+                }
+              }
+            }
+          }
+        }
+      });
+
+      expect(user.mngr.validate('firstName')).toEqual({
+        max: "must be 10 or lower"
+      });
+    });
+
+    it("should be able to validate based on a stored validation rule 'max' to true", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              max: {
+                context: {
+                  max: 10
+                }
+              }
+            }
+          }
+        }
+      });
+
+      user.firstName = 1;
+
+      expect(user.mngr.validate('firstName')).toEqual(true);
+    });
+
+    it("should be able to validate based on a stored validation rule 'range' to false", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              range: {
+                context: {
+                  min: 10,
+                  max: 20
+                }
+              }
+            }
+          }
+        }
+      });
+
+      expect(user.mngr.validate('firstName')).toEqual({
+        range: "must be between 10 and 20"
+      });
+    });
+
+    it("should be able to validate based on a stored validation rule 'range' to true", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              range: {
+                context: {
+                  min: 10,
+                  max: 20
+                }
+              }
+            }
+          }
+        }
+      });
+
+      user.firstName = 15;
+
+      expect(user.mngr.validate('firstName')).toEqual(true);
+    });
+
+    it("should be able to validate based on a custom validation rule to false", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              ruleName: {
+                validator: function(value, context) {
+                  return value === 'John' ? true : context.errorTemplate;
+                },
+                context: {
+                  errorTemplate: 'must be "John"'
+                }
+              }
+            }
+          }
+        }
+      });
+
+      expect(user.mngr.validate('firstName')).toEqual({
+        ruleName: 'must be "John"'
+      });
+    });
+
+    it("should be able to validate based on a custom validation rule to true", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              ruleName: {
+                validator: function(value, context) {
+                  return value === 'John' ? true : context.errorTemplate;
+                },
+                context: {
+                  errorTemplate: 'must be "John"'
+                }
+              }
+            }
+          }
+        }
+      });
+
+      user.firstName = 'John';
+
+      expect(user.mngr.validate('firstName')).toEqual(true);
+    });
+
+    it("should be able to validate based on an array of validators that can allow both stored and custom validation rules to false for both", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              required: {},
+              ruleName: {
+                validator: function(value, context) {
+                  return value === 'John' ? true : context.errorTemplate;
+                },
+                context: {
+                  errorTemplate: 'must be "John"'
+                }
+              }
+            }
+          }
+        }
+      });
+
+      expect(user.mngr.validate('firstName')).toEqual({
+        required: "is required",
+        ruleName: 'must be "John"'
+      });
+    });
+
+    it("should be able to validate based on an array of validators that can allow both stored and custom validation rules to false for one", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              required: {},
+              ruleName: {
+                validator: function(value, context) {
+                  return value === 'John' ? true : context.errorTemplate;
+                },
+                context: {
+                  errorTemplate: 'must be "John"'
+                }
+              }
+            }
+          }
+        }
+      });
+
+      user.firstName = 'Joh';
+
+      expect(user.mngr.validate('firstName')).toEqual({
+        ruleName: 'must be "John"'
+      });
+    });
+
+    it("should be able to validate based on an array of validators that can allow both stored and custom validation rules to true", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              required: {},
+              ruleName: {
+                validator: function(value, context) {
+                  return value === 'John' ? true : context.errorTemplate;
+                },
+                context: {
+                  errorTemplate: 'must be "John"'
+                }
+              }
+            }
+          }
+        }
+      });
+
+      user.firstName = 'John';
+
+      expect(user.mngr.validate('firstName')).toEqual(true);
+    });
+
+    it("should be able to validate all field to false", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              required: {}
+            }
+          },
+          lastName: {
+            validation: {
+              ruleName: {
+                validator: function(value, context) {
+                  return value === 'John' ? true : context.errorTemplate;
+                },
+                context: {
+                  errorTemplate: 'must be "John"'
+                }
+              }
+            }
+          }
+        }
+      });
+
+      expect(user.mngr.validate()).toEqual({
+        firstName: {
+          required: "is required"
+        },
+        lastName: {
+          ruleName: 'must be "John"'
+        }
+      });
+    });
+
+    it("should be able to validate some fields to false", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              required: {}
+            }
+          },
+          lastName: {
+            validation: {
+              ruleName: {
+                validator: function(value, context) {
+                  return value === 'John' ? true : context.errorTemplate;
+                },
+                context: {
+                  errorTemplate: 'must be "John"'
+                }
+              }
+            }
+          }
+        }
+      });
+
+      user.firstName = 'John';
+
+      expect(user.mngr.validate()).toEqual({
+        lastName: {
+          ruleName: 'must be "John"'
+        }
+      });
+    });
+
+    it("should be able to validate all fields to true", function() {
+      var user = nagRestModelFactory.create('user', {}, null, {
+        properties: {
+          firstName: {
+            validation: {
+              required: {}
+            }
+          },
+          lastName: {
+            validation: {
+              ruleName: {
+                validator: function(value, context) {
+                  return value === 'John' ? true : context.errorTemplate;
+                },
+                context: {
+                  errorTemplate: 'must be "John"'
+                }
+              }
+            }
+          }
+        }
+      });
+
+      user.firstName = 'John';
+      user.lastName = 'John';
+
+      expect(user.mngr.validate()).toEqual(true);
+    });
+
+    it("should validate the model automatic when syncing is configured too", function() {
+      var model = nagRestModelFactory.create('user', {
+        id: 1,
+        firstName: 'John',
+        username: 'john.doe'
+      }, true, {
+        properties: {
+          firstName: {
+            validation: {
+              required: {}
+            }
+          },
+          lastName: {
+            validation: {
+              required: {}
+            }
+          }
+        }
+      });
+
+      model.firstName = 'John2';
+
+      expect(model.mngr.sync()).toEqual({
+        lastName: {
+          required: 'is required'
+        }
+      });
+    });
+
+    it("should not perform validation of the model automatic when syncing is not configured to", function() {
+      nagRestConfig.setValidateOnSync(false);
+      var model = nagRestModelFactory.create('user', {
+        id: 1,
+        firstName: 'John',
+        username: 'john.doe'
+      }, true, {
+        properties: {
+          firstName: {
+            validation: {
+              required: {}
+            }
+          },
+          lastName: {
+            validation: {
+              required: {}
+            }
+          }
+        }
+      });
+
+      model.firstName = 'John2';
+
+      $httpBackend.expect('PUT', '/users/1', '{"id":1,"firstName":"John2","lastName":null,"username":"john.doe","managerId":null}').respond(function(method, url, data) {
+        return [200, {
+          response: {
+            status: 'success',
+            data: {
+              user: {
+                id: 1,
+                firstName: 'John2',
+                lastName: null,
+                username: 'john.doe',
+                managerId: null
+              }
+            }
+          }
+        }, {}];
+      });
+      model.mngr.sync();
+      $httpBackend.flush();
+    });
+  });
 });

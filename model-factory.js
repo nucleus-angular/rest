@@ -6,7 +6,8 @@
 angular.module('nag.rest.model', [
   'nag.rest.config',
   'nag.rest.schemaManager',
-  'nag.rest.repository'
+  'nag.rest.repository',
+  'nag.dataValidation'
 ])
 .factory('nagRestModelFactory', [
   '$injector',
@@ -14,7 +15,66 @@ angular.module('nag.rest.model', [
   '$http',
   'nagRestSchemaManager',
   'nagRestConfig',
-  function($injector, $q, $http, nagRestSchemaManager, nagRestConfig) {
+  'nagDataValidation',
+  function($injector, $q, $http, nagRestSchemaManager, nagRestConfig, nagDataValidation) {
+    var validationErrorTemplateCompiler = function(template, variables) {
+      if(_.isObject(variables)) {
+        _.forEach(variables, function(value, variableName) {
+          template = template.replace('%%' + variableName + '%%', value);
+        });
+      }
+
+      return template;
+    };
+
+    var modelValidationRules = {
+      required: {
+        name: 'required',
+        validator: function(value, context) {
+          return nagDataValidation.validate('notEmpty', value) || validationErrorTemplateCompiler(context.errorTemplate, context);
+        },
+        context: {
+          errorTemplate: 'is required'
+        }
+      },
+      email: {
+        name: 'email',
+        validator: function(value, context) {
+          return nagDataValidation.validate('email', value) || validationErrorTemplateCompiler(context.errorTemplate, context);
+        },
+        context: {
+          errorTemplate: 'must be an email'
+        }
+      },
+      min: {
+        name: 'min',
+        validator: function(value, context) {
+          return nagDataValidation.validate('min', value, context.min) || validationErrorTemplateCompiler(context.errorTemplate, context);
+        },
+        context: {
+          errorTemplate: 'must be %%min%% or higher'
+        }
+      },
+      max: {
+        name: 'max',
+        validator: function(value, context) {
+          return nagDataValidation.validate('max', value, context.max) || validationErrorTemplateCompiler(context.errorTemplate, context);
+        },
+        context: {
+          errorTemplate: 'must be %%max%% or lower'
+        }
+      },
+      range: {
+        name: 'range',
+        validator: function(value, context) {
+          return nagDataValidation.validate('range', value, context.min, context.max) || validationErrorTemplateCompiler(context.errorTemplate, context);
+        },
+        context: {
+          errorTemplate: 'must be between %%min%% and %%max%%'
+        }
+      }
+    }
+
     /**
      * Base model
      *
@@ -247,7 +307,16 @@ angular.module('nag.rest.model', [
          */
         sync: {
           value: function(method, syncLocal) {
-            var requestData, getSyncData, deferred;
+            var requestData, getSyncData, deferred, validationResults;
+
+            //see if we should validate the model first
+            if(nagRestConfig.getValidateOnSync() === true) {
+              validationResults = self.mngr.validate();
+
+              if(validationResults !== true) {
+                return validationResults;
+              }
+            }
 
             syncLocal = (syncLocal !== false);
             getSyncData = function(type) {
@@ -383,6 +452,90 @@ angular.module('nag.rest.model', [
             }
 
             return value;
+          }
+        },
+
+        validate: {
+          value: function(passedPropertyName) {
+            var runValidation = function(currentValidation, propertyName) {
+              var validationExecutionResults = {};
+
+              if(_.isString(currentValidation)) {
+                validationExecutionResults.name = modelValidationRules[currentValidation].name;
+                validationExecutionResults.results = modelValidationRules[currentValidation].validator(self[propertyName], modelValidationRules[currentValidation].context);
+              } else if(_.isObject(currentValidation)) {
+                validationExecutionResults.name = currentValidation.name;
+                validationExecutionResults.results = currentValidation.validator(self[propertyName], currentValidation.context);
+              }
+
+              return validationExecutionResults;
+            };
+
+            var validateProperty = function(propertyName) {
+              var propertyValidationRules = schema.properties[propertyName].validation;
+              var propertyValid = propertyValidationRules ? {} : true;
+              var propertyValidationResults;
+
+              if(propertyValid !== true) {
+                _.forEach(Object.keys(propertyValidationRules), function(validationName) {
+                  var validationRule;
+
+                  //todo: we should cache this process so it is only done once per model
+                  if(modelValidationRules[validationName]) {
+                    validationRule = _.clone(modelValidationRules[validationName], true);
+
+                    if(_.isObject(propertyValidationRules[validationName].context)) {
+                      _.extend(validationRule.context, propertyValidationRules[validationName].context);
+                    }
+                  } else {
+                    validationRule = propertyValidationRules[validationName];
+                  }
+
+                  validationRule.name = validationName;
+
+                  propertyValidationResults = runValidation(validationRule, propertyName);
+
+                  if(propertyValidationResults.results !== true) {
+                    propertyValid[propertyValidationResults.name] = propertyValidationResults.results;
+                  }
+                });
+                /*if(!_.isArray(propertyValidationRules)) {
+                  propertyValidationResults = runValidation(propertyValidationRules, propertyName);
+
+                  if(propertyValidationResults.results !== true) {
+                    propertyValid[propertyValidationResults.name] = propertyValidationResults.results;
+                  }
+                } else {
+                  _.forEach(propertyValidationRules, function(val) {
+                    propertyValidationResults = runValidation(val, propertyName);
+
+                    if(propertyValidationResults.results !== true) {
+                      propertyValid[propertyValidationResults.name] = propertyValidationResults.results;
+                    }
+                  });
+                }*/
+              }
+
+              return _.isObject(propertyValid) && Object.keys(propertyValid).length > 0 ? propertyValid : true;
+            }
+
+            var results;
+
+            if(!_.isUndefined(passedPropertyName)) {
+              results = validateProperty(passedPropertyName);
+            } else {
+              results = {};
+
+              _.forEach(schema.properties, function(defination, name) {
+                var outerValidationResults = validateProperty(name);
+
+                if(outerValidationResults !== true) {
+                  results[name] = outerValidationResults;
+                }
+              });
+            }
+
+            return _.isObject(results) && Object.keys(results).length > 0 ? results : true;
           }
         }
       });
