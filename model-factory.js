@@ -368,7 +368,7 @@ angular.module('nag.rest.model', [
             var finalDataFormat = self.mngr.schema.requestFormatter(requestData) || requestData;
 
             $http({
-              url: self.mngr.route,
+              url: self.mngr.fullRoute,
               method: method,
               data: finalDataFormat
             })
