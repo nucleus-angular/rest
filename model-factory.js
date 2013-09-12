@@ -147,6 +147,11 @@ angular.module('nag.rest.model', [
 
       Object.defineProperties(this, modelProperties);
 
+      //extend constructor is available
+      if(schema.inherit) {
+        _.extend(this, schema.inherit);
+      }
+
       //setup the manager (mngr) property
       this.mngr = {};
 

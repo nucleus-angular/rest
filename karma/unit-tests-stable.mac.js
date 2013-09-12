@@ -4,7 +4,7 @@ files = [
   JASMINE,
   JASMINE_ADAPTER,
   'components/string-json-parser/string-json-parser.js',
-  'components/lodash/dist/lodash.legacy.js',
+  'components/lodash/dist/lodash.js',
   'components/jquery/jquery.js',
   'components/angular/angular.js',
   'components/nucleus-angular-data-validation/data-validation.js',

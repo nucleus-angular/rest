@@ -203,7 +203,8 @@ describe('Rest Model Factory', function(){
       autoParse: true,
       requestFormatter: nagRestConfig.getRequestFormatter(),
       isArray: null,
-      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
     });
   });
 
@@ -1727,6 +1728,67 @@ describe('Rest Model Factory', function(){
       });
       model.mngr.sync();
       $httpBackend.flush();
+    });
+  });
+
+  describe('inherited properties', function() {
+    it('should be able to define a inherited properties that will be used to extend the functionality of the generate model', function() {
+      var model = nagRestModelFactory.create('user', {
+        id: 1,
+        firstName: 'John',
+        username: 'john.doe'
+      }, true, {
+        inherit: {
+          shouldHaveMethod: function() {
+            return 'should have method';
+          }
+        }
+      });
+
+      expect(_.isFunction(model.shouldHaveMethod)).toBe(true);
+      expect(model.shouldHaveMethod()).toEqual('should have method');
+    });
+
+    it('should be able to access regular model properties', function() {
+      var model = nagRestModelFactory.create('user', {
+        id: 1,
+        firstName: 'John',
+        username: 'john.doe'
+      }, true, {
+        inherit: {
+          getId: function() {
+            return this.id;
+          },
+          getModelRoute: function() {
+            return this.mngr.route;
+          }
+        }
+      });
+
+      expect(model.getId()).toEqual(1);
+      expect(model.getModelRoute()).toEqual('/users/1');
+    });
+
+    it('should be able to define a inherited properties that have private date that will be used to extend the functionality of the generate model', function() {
+      var inheritedProperties = (function() {
+        var privateData = 'this data is private';
+
+        return {
+          getPrivateData: function() {
+            return privateData;
+          }
+        };
+      }());
+
+      var model = nagRestModelFactory.create('user', {
+        id: 1,
+        firstName: 'John',
+        username: 'john.doe'
+      }, true, {
+        inherit: inheritedProperties
+      });
+
+      expect(model.getPrivateData()).toEqual('this data is private');
     });
   });
 });

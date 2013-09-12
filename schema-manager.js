@@ -59,7 +59,8 @@ angular.module('nag.rest.schemaManager', [
             autoParse: true,
             requestFormatter: nagRestConfig.getRequestFormatter(),
             isArray: null,
-            flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+            flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+            inherit: null
           }, schema);
         }
       },

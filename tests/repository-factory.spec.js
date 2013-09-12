@@ -124,7 +124,8 @@ describe('Rest Base Repository', function(){
       autoParse: true,
       requestFormatter: nagRestConfig.getRequestFormatter(),
       isArray: null,
-      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
     };
 
     expect(repository.mngr.schema).toEqual(expectedSchema);
@@ -211,7 +212,8 @@ describe('Rest Base Repository', function(){
       autoParse: true,
       requestFormatter: nagRestConfig.getRequestFormatter(),
       isArray: null,
-      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
     };
 
     expect(model.mngr.schema).toEqual(expectedSchema);

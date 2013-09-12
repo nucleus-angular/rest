@@ -65,7 +65,8 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user');
@@ -94,7 +95,8 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
     };
 
     var expected2 = {
@@ -110,7 +112,8 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
     };
 
     var userSchema = nagRestSchemaManager.get('user');
@@ -161,7 +164,8 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user', {
@@ -192,7 +196,8 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user', {
@@ -230,7 +235,8 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
     };
 
     var retrievedSchema = nagRestSchemaManager.get('user');
@@ -258,7 +264,8 @@ describe('Rest Schema Manager', function(){
       dataItemLocation: nagRestConfig.getResponseDataLocation(),
       autoParse: true,
       isArray: null,
-      flattenItemRoute: nagRestConfig.getFlattenItemRoute()
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
     };
 
     var modifiedSchema = nagRestSchemaManager.get('user');
