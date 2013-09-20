@@ -85,115 +85,23 @@ TBD
 
 ## Config
 
-The configuration service allows you to retrieve/configure certain options of this library.  To retrieve the properties, you can the nagRestConfig service which has the following API (they all also have corresponding set methods as shown in the nagRestConfigProvider example):
 
-* getBaseUrl() - Returns the base url (default: '')
-* getResponseDataLocation() - Returns the string representing where the data lives in the response from the rest api (default: '')
-* getModelIdProperty() - Returns the default idProperty for schemas (default: 'id')
-* getUpdateMethod() - Returns the default method used when updating model with the.sync() method (default: 'PUT')
-* getFlattenItemRoute() - Return the value used as the default value for the schema's flattenItemRoute configuration (default: false);
-* getStrictMode() - Used to determine if certain code paths should be executed like throwing certain exceptions, doing extra checking, etc... (default: false);
-* getRequestFormatter() - Returns a function used to format the data before it is sent to the rest api with the model's .sync() method (default: function(){})
 
-You can set these values using the nagRestConfigProvider service within a .config() like this:
 
-```javascript
-angular.module('app', ['nag.rest'])
-.config([
-  'nagRestConfigProvider',
-  function(nagRestConfigProvider) {
-    nagRestConfigProvider.setBaseUrl('/api');
-    nagRestConfigProvider.setResponseDataLocation('response.data');
-    nagRestConfigProvider.setModelIdProperty('uid');
-    nagRestConfigProvider.setUpdateMethod('PATCH');
-    nagRestConfigProvider.setFlattenItemRoute(true);
-    nagRestConfigProvider.setStrictMode(true);
-    nagRestConfigProvider.setRequestFormatter(function(data) {
-      return {
-        request: {
-          data: data
-        }    
-      };
-    });
-  }
-});
-```
 
-## APIs
 
-A list of the APIs for the components included in this package.  This contains a basic list of methods and parameters with a simple description and a code example for each.
+
+
+
+
+
+
+
+
+
+
 
 ### Schema Manager
-
-The Schema Manager can be accessed through the nagRestSchemaManager service.  It has the following API:
-
-* add(resourceName, schema) - adds a schema (look at <a href="#schema">schema</a> to see the schema structure)
-
-```javascript
-//------------------------------------------------------------------------------------------------------
-//---- NOTE: the rest of the documentation is going to assume these resources/schemas are available ----
-//------------------------------------------------------------------------------------------------------
-var userSchema = {
-  route: '/users',
-  properties: {
-    id: {
-      sync: false
-    },
-    firstName: {},
-    lastName: {},
-    username: {},
-    email: {}
-  },
-  relations: {
-    project: {
-      resource: 'team'
-    }
-  },
-  dataListLocation: 'response.data.users',
-  dataItemLocation: 'response.data.user'
-};
-
-projectSchema = {
-  route: '/projects',
-  properties: {
-    projectId: {
-      sync: false
-    },
-    name: {},
-    creatorId: {}
-  },
-  relations: {
-    team: {
-      resource: 'team'
-    }
-  }
-  idProperty: 'projectId',
-  dataListLocation: 'response.data.projects',
-  dataItemLocation: 'response.data.project',
-  flattenItemRoute: false
-};
-
-teamSchema = {
-  route: '/teams',
-  properties: {
-    id: {
-      sync: false
-    },
-    name: {}
-  },
-  dataListLocation: 'response.data.teams',
-  dataItemLocation: 'response.data.team'
-};
-
-//after this you will be able to pass the string 'user' with anything asking for a resourceName
-nagRestSchemaManager.add('user', userSchema);
-
-//after this you will be able to pass the string 'project' with anything asking for a resourceName
-nagRestSchemaManager.add('project', projectSchema);
-
-//after this you will be able to pass the string 'team' with anything asking for a resourceName
-nagRestSchemaManager.add('team', teamSchema);
-```
 
 * get(resourceName, overrideSchemaOptions) - retrieves a schema
 
@@ -837,32 +745,3 @@ user.firstName;
 * mngr.schema - returns the schema related to this model (READ ONLY)
 
 ## Object Definitions
-
-### Schema
-
-* **route (default: null)**
-  * The relatively route from the configured base url to this resource
-* **idProperty (default: nagRestConfig.getModelIdProperty())**
-  * The property that represents the id (generally a primary key in a database)
-* **properties: (default: {})**
-  * An object with the definition of all the valid properties for the resource where the key is the property name and the value is the property configuration.  Property configuration can be:
-    * sync: Tells when this property should be saved (NOTE: when doing a PUT sync, these values are ignored).  The value are:
-      * false - don't sync ever (can not set data)
-      * 'create' - only save on create (can only set data when model is not synced)
-      * 'update' - only save on update (con only set data when model is synced)
-    * remoteProperty: If you want the name of the property of the model to be different from the property that the remote api gives, give the remote property name here and it will normalize the property name both incoming and outgoing.
-* **relations**: This is an object where the key is the name of the resource and the value its configuration
-  * resource: The resourceName this relation links to
-  * flatten: Used to set the flattenItemRoute when retrieving models using getRelation().  if not set, flattenItemRoute will be set to the value of the flattenItemRoute of the resource schema the relation belongs to
-* **dataListLocation: (default: nagRestConfig.getResponseDataLocation())**
-  * A string representing the JSON hierarchy where the data in location in the REST API response when returning a list of resources
-* **dataItemLocation: (default: getResponseDataLocation())**
-  * A string representing the JSON hierarchy where the data in location in the REST API response when returning a single resource
-* **autoParse: (default: true)**
-  * Whether or not to automatically parse the REST API response
-* **requestFormatter: (default: nagRestConfig.getRequestFormatter())**
-  * A function that can wrap the model data in a specific format before sending it to the REST API.  This function take one parameter and that in the model data that is being sent.  The data passed into this callback has already been normalized to the proper format the REST API is expecting for the names of the property of the model.
-* **isArray**: (default: null)
-  * Determines whether all requests are or are not arrays when retrieving data.  This can be override on a call by call level with the forceIsArray() method on models/repositories
-* **flattenItemRoute**: (default: nagRestConfig.getFlattenItemRoute())
-  * if set to true, mngr.route/mngr.fullRoute will remove all but the last resource path. (```/users/123/projects/234/teams/345``` would be converted to ```/teams/345```).  This only applies to when there is a trailing id, if the trailing element in the url is a resource name, nothing will get removed (```/users/123/projects/234/teams``` would remain the same)
