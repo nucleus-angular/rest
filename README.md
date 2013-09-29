@@ -78,28 +78,3 @@ This is still in early development and as such, I can't guarantee that backwards
 ### Pull Requests
 
 TBD
-
-# Basic Guide
-
-TBD
-
-## Config
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

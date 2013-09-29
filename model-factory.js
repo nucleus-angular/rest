@@ -76,14 +76,33 @@ angular.module('nag.rest.model', [
     }
 
     /**
-     * This is the base model that is used in the generation of all model instance.
+     * # Base Model
      *
-     * This class includes all the the nessecary functionality to be able to handle models that relate to a REST API
+     * All the internal properties are exposed through the .mngr property.  This is done so not to pollute the top level properties and makes a clean distinction between built-in functionality and custom functionality.
      *
-     * ```html
-     * <base-model id="some-html-code">
-     *   <span>test</span>
-     * </base-model>
+     * ## Properties
+     *
+     * Properties configured in the schema for the model are exposed as simple properties of the model object itself.
+     *
+     * ```javascript
+     * var userRepository = nagRestRepositoryFactory.create('user');
+     * var user = userRepository.create({
+     *   id: 1,
+     *   firstName: 'John';
+     *   lastName: 'Doe'
+     * });
+     *
+     * // returns:
+     * // 1
+     * user.id;
+     *
+     * // returns:
+     * // 'John'
+     * user.firstName;
+     *
+     * // returns:
+     * // 'Doe'
+     * user.lastName;
      * ```
      *
      * @class BaseModel
@@ -168,6 +187,7 @@ angular.module('nag.rest.model', [
          * Schema for the model
          *
          * @property mngr.schema
+         * @readonly
          * @type {object}
          */
         schema: {
@@ -175,14 +195,43 @@ angular.module('nag.rest.model', [
         },
 
         /**
-         * The current state of the model, can be
-         * - loaded
-         * - dirty
-         * - deleted
-         * - new
+         * The current state of the model. Can be the following:
+         * - loaded: The model's data is the latest data that is is aware of
+         * - dirty: The model has changes that have yet to be synced
+         * - deleted: The model has been processed for deletion
+         * - new: The model is not yet sent through the api to be process (generally persistent to some backend)
          *
          * @property mngr.state
+         * @readonly
          * @type {string}
+         *
+         * @example:javascript
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         * var user = userRepository.mngr.create();
+         *
+         * // returns:
+         * // 'new'
+         * user.mngr.state;
+         *
+         * user.firstName = 'John';
+         * user.lastName = 'Doe';
+         * user.mngr.sync();
+         *
+         * // returns:
+         * // 'loaded'
+         * user.mngr.state;
+         *
+         * user.firstName = 'John2';
+         *
+         * // returns:
+         * // 'dirty'
+         * user.mngr.state;
+         *
+         * user.delete();
+         *
+         * // returns:
+         * // 'deleted'
+         * user.mngr.state;
          */
         state: {
           get: function() {
@@ -199,17 +248,33 @@ angular.module('nag.rest.model', [
         },
 
         /**
-         * Reset the model
+         * Resets the model
          *
          * @method mngr.reset
          *
          * @example:javascript
-         * model.reset();
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         * var user = userRepository.mngr.create({
+         *   id: 1,
+         *   firstName: 'John',
+         *   lastName: 'Doe'
+         * }, true);
          *
-         * @example:html
-         * <div type="test">
-         *   test
-         * </div>
+         * // returns:
+         * // 'John'
+         * user.firstName;
+         *
+         * user.firstName = 'John2';
+         *
+         * // returns:
+         * // 'John2'
+         * user.firstName;
+         *
+         * user.mngr.reset();
+         *
+         * // returns:
+         * // 'John';
+         * user.firstName;
          */
         reset: {
           value: function() {
@@ -219,10 +284,39 @@ angular.module('nag.rest.model', [
         },
 
         /**
-         * Retrieve the properties the properties that are dirty
+         * Retrieve an array of the property names that are dirty
          *
          * @property mngr.dirtyProperties
          * @type {array}
+         *
+         * @example:javascript
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         * var user = userRepository.mngr.create();
+         *
+         * //since we have not set any data, mngr.dirtyProperties will return an empty array
+         *
+         * // returns:
+         * // []
+         * user.mngr.dirtyProperties;
+         *
+         * user.username = 'john.doe';
+         *
+         * //now that we have set data that is not synced, we can check that by the mngr.dirtyProperties
+         * //which will return an with the properties that are dirty
+         *
+         * // returns:
+         * // [
+         * //   'username'
+         * // ]
+         * user.mngr.dirtyProperties;
+         *
+         * user.mngr.sync();
+         *
+         * //after the data has been synced, mngr.dirtyProperties will return an empty array again
+         *
+         * // returns:
+         * // []
+         * user.mngr.dirtyProperties;
          */
         dirtyProperties: {
           get: function() {
@@ -236,6 +330,35 @@ angular.module('nag.rest.model', [
          * @method mngr.toJson
          *
          * @return {object} JSON representation of the model
+         *
+         * @example:javascript
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         * var user = userRepository.mgnr.create();
+         *
+         * user.set({
+         *   'firstName': 'John'
+         *   'lastName': 'Doe',
+         *   'username': 'john.doe',
+         *   'email': 'john.doe@example.com'
+         * });
+         *
+         * //the mngr.toJson() method returns a json object that represents the data the model is holding
+         *
+         * // results:
+         * // {
+         * //   "firstName": "John"
+         * //   "lastName": "Doe",
+         * //   "username": "john.doe",
+         * //   "email": "john.doe@example.com"
+         * // }
+         * var jsonData = user.mngr.toJson();
+         *
+         * //also note that modifying the resulting JSON will not effect the models data
+         * jsonData.firstName = 'John2';
+         *
+         * // returns:
+         * // 'John'
+         * user.firstName;
          */
         toJson: {
           value: function() {
@@ -250,10 +373,34 @@ angular.module('nag.rest.model', [
         },
 
         /**
-         * Whether or the the model is sync with the REST service
+         * Tells you whether or not the model is local only or a version of it is synced to the API.
          *
-         * @property mngr.isRemote
-         * @type {boolean}
+         * @method mngr.isRemote
+         *
+         * @return {boolean}
+         *
+         * @example:javascript
+         * var userRepository = nagRestBaseRepository.create('user');
+         * var user = userRepository.mngr.create();
+         *
+         * //since the model has not been synced to the rest api mngr.isRemote() method will return false
+         *
+         * // returns:
+         * // false
+         * user.mngr.isRemote();
+         *
+         * var remoteUser = userRepository.mngr.create({
+         *   id: 123,
+         *   firstName: 'John',
+         *   lastName: 'Doe'
+         * }, true);
+         *
+         * //since the model is created with the remoteFlag and the idProperty is set, mngrisRemote() will return
+         * //true
+         *
+         * // returns:
+         * // true
+         * remoteUser.mngr.isRemote();
          */
         isRemote: {
           value: function() {
@@ -267,6 +414,50 @@ angular.module('nag.rest.model', [
          * @method mngr.route
          *
          * @return {string} Model's relative route
+         *
+         * @example:javascript
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         * var user = userRepository.mngr.create();
+         *
+         * //by default it will result in the route for the schema of the model
+         *
+         * // returns:
+         * // '/users';
+         * user.mngr.route
+         *
+         * //now if the mngr.isRemote() results in true (which just means the mngr.state is either 'loaded' or
+         * //'dirty'), it will include the idProperty of the model in the route
+         *
+         * var remoteUser - userRepository.mngr.find(1);
+         *
+         * // returns:
+         * // '/users/1'
+         * remoteUser.mngr.route;
+         *
+         * //it also take into account the flattenItemRoute property of the schema configuration
+         *
+         * var nestedUserRepository = nagRestRepositoryFactory.create('user', {
+         *   route: '/projects/1/users'
+         *   flattenItemRoute: true
+         * });
+         * var nestedUser = nestedUserRepository.mngr.create();
+         *
+         * // returns:
+         * // '/projects/1/users'
+         * nestedUser.mngr.route;
+         *
+         * var nestedRemoteUser = nestedUserRepository.mngr.find(1);
+         *
+         * // returns:
+         * // '/users/1';
+         * nestedRemoteUser.mngr.route;
+         *
+         * //fullRoute will just prepend the base url to the route.  lets assume the base url is
+         * //http://api.example.com
+         *
+         * // returns:
+         * // 'http://api.example.com/users/1'
+         * nestedRemoteUser.mngr.fullRoute;
          */
         route: {
           get: function() {
@@ -292,6 +483,20 @@ angular.module('nag.rest.model', [
          * @method mngr.fullRoute
          *
          * @return {string} Model's full route
+         *
+         * @example:javascript
+         * var nestedUserRepository = nagRestRepositoryFactory.create('user', {
+         *   route: '/projects/1/users'
+         *   flattenItemRoute: true
+         * });
+         * var nestedRemoteUser = nestedUserRepository.mngr.find(1);
+         *
+         * //fullRoute will just prepend the base url to the route.  lets assume the base url is
+         * //http://api.example.com
+         *
+         * // returns:
+         * // 'http://api.example.com/users/1'
+         * nestedRemoteUser.mngr.fullRoute;
          */
         fullRoute: {
           get: function() {
@@ -305,6 +510,25 @@ angular.module('nag.rest.model', [
          * @method mngr.extendData
          *
          * @param {object} Properties to set
+         *
+         * @example:javascript
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         * var user = userRepository.mngr.create();
+         *
+         * //now instead of set each property individually, you can pass an object of property values to the
+         * //extendData method to set multiple values at once
+         * user.mngr.extendData({
+         *   firstName: 'John',
+         *   lastName: 'Doe
+         * });
+         *
+         * // returns:
+         * // 'John';
+         * user.firstName;
+         *
+         * // returns:
+         * // 'Doe'
+         * user.lastName;
          */
         extendData: {
           value: extendData
@@ -319,6 +543,56 @@ angular.module('nag.rest.model', [
          * @param {boolean} [syncLocal=true] Whether or not the local model instance should sync the data recieved from the sync call
          *
          * @return {promise} Promise that can be used to trigger additional functionality of success/failure of the sync process
+         *
+         * @example:javascript
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         * var user = userRepository.mngr.create();
+         *
+         * user.mngr.extendData({
+         *   firstName: 'John',
+         *   lastName = 'Doe',
+         *   username = 'john.doe',
+         *   email = 'john.doe@example.com'
+         * });
+         *
+         * //the mngr.sync() method will send the data through the rest api to be processed (generally saved to a data
+         * //store of some sort).  the mngr.sync() method is smart enough to know what method to use.  since the
+         * //model's mngr.state is 'new', mngr.sync() will automatically use POST
+         *
+         * // POST /users with content of
+         * // {
+         * //   "firstName": "John"
+         * //   "lastName": "Doe",
+         * //   "username": "john.doe",
+         * //   "email": "john.doe@example.com"
+         * // }
+         * user.mngr.sync();
+         *
+         * //now that the data is synced the model's mngr.state is marked as 'loaded' and if you try to
+         * //mngr.sync() again, it is going to PUT the data (or whatever is set and the update method for
+         * //the nagRestConfig service)
+         *
+         * // PUT /users/123 with content of
+         * // {
+         * //   "id": 123
+         * //   "firstName": "John"
+         * //   "lastName": "Doe",
+         * //   "username": "john.doe",
+         * //   "email": "john.doe@example.com"
+         * // }
+         * user.mngr.sync();
+         *
+         * //the mngr.sync() method also allows you to specify the method to used to sync.  lets say I wanted to
+         * //update the email address however it would be a waste of bandwidth to have to send all the other data
+         * //since it is not changing.  luckily our rest api support the PATCH method and the mngr.sync() method is
+         * //smart enough to only send the dirty property when using the PATCH method
+         * user.email = 'john.doe@example2.com';
+         *
+         * // PATCH /users/789 with content of
+         * // {
+         * //   "email": "john.doe@example2.com"
+         * // }
+         * user.mngr.sync('PATCH');
          */
         sync: {
           value: function(method, syncLocal) {
@@ -408,29 +682,21 @@ angular.module('nag.rest.model', [
         },
 
         /**
-         * Deletes the model from the REST service
-         *
-         * This is some more documentation, let see if lists work.
-         *
-         * - item 1
-         * - item 2
-         * - item 3
-         *
-         * ```javascript
-         * model.destroy();
-         * ```
-         *
-         * more code
-         *
-         * ```css
-         * .test {
-         *   display: none;
-         * }
-         * ```
-         *
-         * final sentence
+         * Deletes the model from the REST service.
          *
          * @method mngr.destroy
+         *
+         * @example:javascript
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         * var user = userRepository.mngr.find(789);
+         *
+         * //to delete the user we can just call the mngr.destroy() method.  you should note the calling
+         * //mngr.destroy() only sends the delete call to the rest api, the model itself still has the data
+         * //so if you wanted (though you should never call mngr.destroy() unless you are sure), you could
+         * //sync the data back
+         *
+         * // DELETE /users/789
+         * user.mngr.destroy();
          */
         destroy: {
           value : function() {
@@ -455,6 +721,24 @@ angular.module('nag.rest.model', [
          * @param {mixed} relationId The id of the relational model you want to get
          *
          * @return {object|array} Either a model or an array or model, the object also has the promises .then method attach to access data that way
+         *
+         * @example:javascript
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         * var user = userRepository.mngr.find(123);
+         *
+         * //we can pull any relation thats configured in the relations part of the schema with the
+         * //mngr.getRelation() method.  the first parameter this method takes is the name of the relation
+         * //as it is defined in the schema.  so lets get all projects for a user.
+         *
+         * // GET /users/123/projects
+         * user.mngr.getRelation('project').then(function(data) {
+         *   var projects = data.parsedData
+         * });
+         *
+         * //you can also pass in a second parameter that is the relation id value
+         *
+         * // GET /users/123/projects/234
+         * var project = user.mngr.getRelation('project', 234);
          */
         getRelation: {
           value: function(relationName, relationId) {
@@ -490,6 +774,11 @@ angular.module('nag.rest.model', [
           }
         },
 
+        /**
+         *
+         *
+         * @todo: document
+         */
         validate: {
           value: function(passedPropertyName) {
             var runValidation = function(currentValidation, propertyName) {
@@ -534,21 +823,6 @@ angular.module('nag.rest.model', [
                     propertyValid[propertyValidationResults.name] = propertyValidationResults.results;
                   }
                 });
-                /*if(!_.isArray(propertyValidationRules)) {
-                  propertyValidationResults = runValidation(propertyValidationRules, propertyName);
-
-                  if(propertyValidationResults.results !== true) {
-                    propertyValid[propertyValidationResults.name] = propertyValidationResults.results;
-                  }
-                } else {
-                  _.forEach(propertyValidationRules, function(val) {
-                    propertyValidationResults = runValidation(val, propertyName);
-
-                    if(propertyValidationResults.results !== true) {
-                      propertyValid[propertyValidationResults.name] = propertyValidationResults.results;
-                    }
-                  });
-                }*/
               }
 
               return _.isObject(propertyValid) && Object.keys(propertyValid).length > 0 ? propertyValid : true;
@@ -579,6 +853,8 @@ angular.module('nag.rest.model', [
     /**
      * Model factory
      *
+     * The model is the main way to interact with individual records from the REST API and sync data to the REST API.  It is recommended that you use the repository instance to create instances of a model however you can also create an instance of the model using the nagRestModelFactory service.
+     *
      * @ngservice nagRestModelFactory
      */
     return {
@@ -593,6 +869,37 @@ angular.module('nag.rest.model', [
        * @param {object} overrideSchemaOptions Override options for this model factory instance
        *
        * @returns {object} Instance of the model factory
+       *
+       * @example:javascript
+       * //it is not recommend you create models from the nagRestModelFactory (always try to use the
+       * //repository.mngr.create() method) but if the case does arrive that you need to, the option
+       * //does exist.  the first parameter is the resourceName that has the schema you want to based
+       * //this model off of.
+       * var user = nagRestModelFactory.create('user');
+       *
+       * //the second parameter is the initial data
+       * var user nagRestModelFactory.create('user', {
+       *   firstName: 'John',
+       *   lastName: 'Doe'
+       * });
+       *
+       * //now by default it will create a model that has mngr.state set to 'new' so syncing it will make
+       * //it attempt a POST.  maybe you are getting data the you know is remote and if so you can give the
+       * //third parameter a value of true.  just note that you also have to make sure that the idProperty of
+       * //initial data is also set otherwise is will still assume the model's mngr.state is 'new' even if
+       * //the second parameter has a value of true
+       * var remoteUser = nagRestModelFactory.create('user', {
+       *   id: 123,
+       *   firstName: 'John',
+       *    lastName: 'Doe'
+       * }, true);
+       *
+       * //the fourth parameter will allow you to create an instance of a model with a customized schema.  by
+       * //default the model generated will use the schema associated to the repository but the third
+       * //parameter is a list of overrides for the schema for the instance of that model
+       * var customUser = nagRestModelFactory.create('user', {}, false, {
+       *   route: '/custom/users'
+       * });
        */
       create: function(resourceName, initialData, remoteFlag, overrideSchemaOptions) {
         return new BaseModel(resourceName, initialData, remoteFlag, overrideSchemaOptions);

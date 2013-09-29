@@ -213,11 +213,11 @@ angular.module('nag.rest.config', [
         setModelIdProperty: setModelIdProperty,
 
         /**
-         * Set the default tHTTP method to use when sending data with the REST call
+         * Set the default HTTP method to use when sending data with the REST call
          *
          * @method setUpdateMethod
          *
-         * @param {function}
+         * @param {string} HTTP method to use to update data
          */
         setUpdateMethod: setUpdateMethod,
 

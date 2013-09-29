@@ -11,7 +11,7 @@ angular.module('nag.rest.repository', [
   'nagRestModelFactory',
   function($http, $q, nagRestSchemaManager, nagRestConfig, nagRestModelFactory) {
     /**
-     * Base repository
+     * All the internal properties are exposed through the mngr property.  This is done so not to pollute the top level properties and makes a clean distinction between built-in functionality and custom functionality.
      *
      * @class BaseRepository
      * @constructor
@@ -28,10 +28,11 @@ angular.module('nag.rest.repository', [
       this.mngr = {};
       Object.defineProperties(this.mngr, {
         /**
-         * Schema for the repository
+         * The schema configured for this repository
          *
          * @property mngr.schema
-         * @type {object}
+         * @readonly
+         * @type object
          */
         schema: {
           value: schema
@@ -41,7 +42,8 @@ angular.module('nag.rest.repository', [
          * Resource name for the repository
          *
          * @property mngr.resourceName
-         * @type {string}
+         * @readonly
+         * @type string
          */
         resourceName: {
           value: resourceName
@@ -53,6 +55,13 @@ angular.module('nag.rest.repository', [
          * @method mngr.route
          *
          * @return {string} Repository's relative route
+         *
+         * @example:javascript
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         *
+         * //Returns
+         * // /users
+         * userRepository.route();
          */
         route: {
           get: function() {
@@ -66,6 +75,13 @@ angular.module('nag.rest.repository', [
          * @method mngr.fullRoute
          *
          * @return {string} Repository's full route
+         *
+         * @example:javascript
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         *
+         * //Returns
+         * // /base/url/users
+         * userRepository.fullRoute();
          */
         fullRoute: {
           get: function() {
@@ -83,6 +99,33 @@ angular.module('nag.rest.repository', [
          * @param {object} [overrideSchemaOptions] Override options for the schema for this instance of the model
          *
          * @return {object} New model instance
+         *
+         * @example:javascript
+         * //using the repository is the recommended way to generate a new models, the first parameter is the
+         * //initial data
+         * var userRepository = nagRestRepositoryFactory.create('user');
+         * var user = userRepository.mngr.create({
+         *   firstName: 'John',
+         *   lastName: 'Doe'
+         * });
+         *
+         * //now by default it will create a model that has mngr.state set to 'new' so syncing it will make
+         * //it attempt a POST.  maybe you are getting data the you know is remote and if so you can give the
+         * //second parameter a value of true.  just note that you also have to make sure that the idProperty of
+         * //initial data is also set otherwise is will still assume the model's mngr.state is 'new' even if
+         * //the second parameter has a value of true
+         * var remoteUser = userRepository.mngr.create({
+         *   id: 123,
+         *   firstName: 'John',
+         *   lastName: 'Doe'
+         * }, true);
+         *
+         * //the third parameter will allow you to create an instance of a model with a customized schema.  by
+         * //default the model generated will use the schema associated to the repository but the third
+         * //parameter is a list of overrides for the schema for the instance of that model
+         * var customUser = userRepository.mngr.create({}, false, {
+         *   route: '/custom/users'
+         * });
          */
         create: {
           value: function(initialData, remoteFlag, overrideSchemaOptions) {
@@ -91,7 +134,7 @@ angular.module('nag.rest.repository', [
         },
 
         /**
-         * Force the repository to consideration the data as an array even if it think it isn't
+         * Will assume the next request for retrieving data result will or will not be an array (based on passed value), will override schema.isArray
          *
          * @chainable
          *
@@ -100,6 +143,19 @@ angular.module('nag.rest.repository', [
          * @param {boolean} value Whether or not to for array mode
          *
          * @return {mngr}
+         *
+         * @example:javascript
+         * //now when retrieving data, the library is smarter enough to guess whether the results will be returned
+         * //as an array or a single object however sometimes the guess will be wrong.  any time you are retrieving
+         * //data without an id, it assumes an array will be returned and when you have an id, it assume an object
+         * //will be returned.  now lets say we have a rest api call with the route /session but it returns a
+         * //single user object.  one way is to use the forceIsArray() method:
+
+         * // get /session
+         * var sessionRepository = nagRestRepositoryFactory.create('user', {
+         *   '/session'
+         * });
+         * sessionRepository.mngr.forceIsArray(false).find();
          */
         forceIsArray: {
           value: function(value) {
@@ -118,6 +174,53 @@ angular.module('nag.rest.repository', [
          * @param {object} [postData] Key/Value paring of data to pass in teh content of a POST
          *
          * @return {object|array} Either a model or an array or model, the object also has the promises .then method attach to access data that way
+         *
+         * @example:javascript
+         * //one method that exists in order to retrieve data from a repository is the find() method.  The first
+         * //parameter of find can take an object with key/value pairs that will be inserted into the query string
+         * //part of the url.
+         *
+         * // GET /users?firstName=John
+         * var users = userRepository.mngr.find({
+         *   firstName: 'John'
+         * });
+         *
+         * //you can also pass a number/string as the first argument and it will assume that is the value of the
+         * //idProperty for the data the repository represents.  in this case the result is initially a new empty
+         * //model and the data gets filled in once the data is received and processed
+         *
+         * // GET /users/123
+         * var user = userRepository.mngr.find(123);
+         *
+         * //The second parameter of find() is an object of header/value pairs
+         *
+         * // GET /users with request header x-user:test
+         * var users = userRepository.mngr.find({}, {
+         *   'x-user': 'test'
+         * });
+         *
+         * //now some rest apis offer the ability to do very complex queries however because of the complexity,
+         * //they require you to pass the data in as a post request instead of get and that is what the third
+         * //parameter is for.  If the third parameters is an object, it will send the request as a POST with
+         * //the data of the third parameters as the content body
+         *
+         * // POST /users?query=data with content of
+         * // {
+         * //   "filters": [{
+         * //     "field": "email",
+         * //     "condition": "like",
+         * //     "value": "%@gmail.com"
+         * //   }]
+         * // }
+         * var gmailUsers = userRepository.mngr.find({
+         *   query: 'data',
+         * }, {}, true, {
+         *   filters: [{
+         *     field: 'email',
+         *     condition: 'like',
+         *     value: '%@gmail.com'
+         *   }]
+         * });
          */
         find: {
           value: function(params, headers, postData) {
@@ -228,6 +331,8 @@ angular.module('nag.rest.repository', [
     /**
      * # Repository Factory
      *
+     * The Repository is the main way to interact with models that map to REST APIs.  You can create an instance of a Repository by using the nagRestRepositoryFactory service.
+     *
      * ## Querying REST API results
      *
      * Unless otherwise specifically stated, any method that makes a request to the api for data, whether returning one or multiple records, can be processed in 2 different ways
@@ -294,6 +399,20 @@ angular.module('nag.rest.repository', [
        * @param {object} overrideSchemaOptions Override option for the schema for use for this instance of the repository factory
        *
        * @returns {object} Instance of the repository factory
+       *
+       * @example:javascript
+       * //all you need to do in order to create a repository is pass in the resourceName that matches the
+       * //schema you want
+       * var userRepository = nagRestRepositoryFactory.create('user');
+       *
+       * //there is also a second parameter allowing you to customize the schema for the instance of the
+       * //repository that is going to be created.  this is useful if there is a specialized rest api, lets
+       * //say /session, that returns a standard resource
+       * var sessionRepository = nagRestRepositoryFactory.create('user', {
+       *   route: '/session',
+       *   dataItemLocation: 'response.data',
+       *   isArray: false
+       * });
        */
       create: function(resourceName, overrideSchemaOptions) {
         return new BaseRepository(resourceName, overrideSchemaOptions);
