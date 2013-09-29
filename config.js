@@ -1,5 +1,39 @@
 /**
- * Handles configuration for the rest system
+ * # Configuration service
+ *
+ * The configuration service allows you to retrieve/configure certain options of this library.  To retrieve the properties, you can the nagRestConfig service which has the following API (they all also have corresponding set methods as shown in the nagRestConfigProvider example):
+ *
+ * - getBaseUrl() - Returns the base url (default: '')
+ * - getResponseDataLocation() - Returns the string representing where the data lives in the response from the rest api (default: '')
+ * - getModelIdProperty() - Returns the default idProperty for schemas (default: 'id')
+ * - getUpdateMethod() - Returns the default method used when updating model with the.sync() method (default: 'PUT')
+ * - getFlattenItemRoute() - Return the value used as the default value for the schema's flattenItemRoute configuration (default: false);
+ * - getStrictMode() - Used to determine if certain code paths should be executed like throwing certain exceptions, doing extra checking, etc... (default: false);
+ * - getRequestFormatter() - Returns a function used to format the data before it is sent to the rest api with the model's .sync() method (default: function(){})
+ *
+ * You can set these values using the nagRestConfigProvider service within a .config() like this:
+ *
+ * ```javascript
+ * angular.module('app', ['nag.rest'])
+ * .config([
+ *   'nagRestConfigProvider',
+ *   function(nagRestConfigProvider) {
+ *     nagRestConfigProvider.setBaseUrl('/api');
+ *     nagRestConfigProvider.setResponseDataLocation('response.data');
+ *     nagRestConfigProvider.setModelIdProperty('uid');
+ *     nagRestConfigProvider.setUpdateMethod('PATCH');
+ *     nagRestConfigProvider.setFlattenItemRoute(true);
+ *     nagRestConfigProvider.setStrictMode(true);
+ *     nagRestConfigProvider.setRequestFormatter(function(data) {
+ *       return {
+ *         request: {
+ *           data: data
+ *         }
+ *       };
+ *     });
+ *   }
+ * });
+ * ```
  *
  * @module nag.rest.config
  * @ngservice nagRestConfig

@@ -76,7 +76,15 @@ angular.module('nag.rest.model', [
     }
 
     /**
-     * Base model
+     * This is the base model that is used in the generation of all model instance.
+     *
+     * This class includes all the the nessecary functionality to be able to handle models that relate to a REST API
+     *
+     * ```html
+     * <base-model id="some-html-code">
+     *   <span>test</span>
+     * </base-model>
+     * ```
      *
      * @class BaseModel
      * @constructor
@@ -195,11 +203,13 @@ angular.module('nag.rest.model', [
          *
          * @method mngr.reset
          *
-         * @example
+         * @example:javascript
          * model.reset();
          *
-         * @example
-         * model.reset();
+         * @example:html
+         * <div type="test">
+         *   test
+         * </div>
          */
         reset: {
           value: function() {
@@ -398,9 +408,29 @@ angular.module('nag.rest.model', [
         },
 
         /**
-         * Deletes the model fromt he REST service
+         * Deletes the model from the REST service
          *
-         * @method mngr.delete
+         * This is some more documentation, let see if lists work.
+         *
+         * - item 1
+         * - item 2
+         * - item 3
+         *
+         * ```javascript
+         * model.destroy();
+         * ```
+         *
+         * more code
+         *
+         * ```css
+         * .test {
+         *   display: none;
+         * }
+         * ```
+         *
+         * final sentence
+         *
+         * @method mngr.destroy
          */
         destroy: {
           value : function() {

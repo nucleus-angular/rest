@@ -1,9 +1,3 @@
-/**
- * Repository factory for the rest system
- *
- * @module nag.rest.repository
- * @ngservice nagRestRepositoryFactory
- */
 angular.module('nag.rest.repository', [
   'nag.rest.config',
   'nag.rest.schemaManager',
@@ -232,8 +226,62 @@ angular.module('nag.rest.repository', [
     };
 
     /**
-     * Repository factory
+     * # Repository Factory
      *
+     * ## Querying REST API results
+     *
+     * Unless otherwise specifically stated, any method that makes a request to the api for data, whether returning one or multiple records, can be processed in 2 different ways
+     *
+     * One way is by value, as shown by the following:
+     *
+     * ```javascript
+     * //in this instance an array will be returned and it will have the data populated once the rest api
+     * //returns the data and it is processed
+     * var arrayResults = repository.mngr.find();
+     *
+     * //in this instance an empty model will be returned and it will have the data populated once the rest
+     * //api returns the data and it is processed
+     * var project = user.mngr.getRelation('project', 234);
+     * ```
+     *
+     * The second way is by way of the promise's then() method, as shown by the following:
+     *
+     * ```javascript
+     * repository.mngr.find().then(function(data) {
+     *   //the data parameter has a few properties associated to it.  if the schema configuration has autoParse
+     *   //to true (which by default it is) one of them will be parsedData.  in the result of doing a find()
+     *   //with a string/number, parsedData is a model and when doing .find() with an object, parsedData is an
+     *   //array
+     *   users = data.parsedData;
+     *
+     *   //another element that is always available is the raw unprocessed JSON of the response as the
+     *   //rawResponse property.  if you have autoParse set to false then you will have to use the promise
+     *   //way of getting the data and process the rawResponse manually in the success of the then() method
+     *   var customResponseProcessor = function(response) {
+     *     //code...
+     *   };
+     *   users = customResponseProcessor(data.rawResponse);
+     *
+     *   //another use for the rawResponse is maybe there is some meta data you need, like for instance the
+     *   //rest api supports paging of data and you need that data for the controller
+     *   totalRecord; = data.rawResponse.meta.totalRecords;
+     * });
+     *
+     * user.mngr.getRelation('project', 234).then(function(data) {
+     *   //the parsedData property will have the model
+     *   user = data.parsedData;
+     *
+     *   //and of course you can do custom processing here too
+     *   var customResponseProcessor = function(response) {
+     *     //code...
+     *   };
+     *   user = customResponseProcessor(data.rawResponse);
+     * });
+     * ```
+     *
+     * The rest of the code examples might use either of the options for getting the data depending on the situation.
+     *
+     * @module nag.rest.repository
      * @ngservice nagRestRepositoryFactory
      */
     return {
