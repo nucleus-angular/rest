@@ -7,7 +7,7 @@ module.exports = function(config) {
     singleRun: true,
     preprocessors: {},
     files: [
-      'components/string-json-parser/string-json-parser.js',
+      'components/javascript-utilities/utilities.js',
       'components/lodash/dist/lodash.js',
       'components/jquery/jquery.js',
       'components/unstable-angular-complete/angular.js',

@@ -15,6 +15,7 @@ describe('Rest Config', function(){
     expect(nagRestConfig.getUpdateMethod()).toBe('PUT');
     expect(nagRestConfig.getFlattenItemRoute()).toBe(false);
     expect(nagRestConfig.getValidateOnSync()).toBe(true);
+    expect(nagRestConfig.getIsArray()).toBe(null);
     expect(_.isFunction(nagRestConfig.getRequestFormatter())).toBe(true);
   }));
 
@@ -77,5 +78,11 @@ describe('Rest Config', function(){
     provider.setValidateOnSync(false);
 
     expect(nagRestConfig.getValidateOnSync()).toBe(false);
+  }));
+
+  it("should be able get/set isArray", inject(function(nagRestConfig) {
+    provider.setIsArray(true);
+
+    expect(nagRestConfig.getIsArray()).toBe(true);
   }));
 });

@@ -663,7 +663,7 @@ angular.module('nag.rest.model', [
             })
             .success(function(response) {
               if(syncLocal) {
-                var modelData = stringJsonParser(schema.dataItemLocation, response);
+                var modelData = utilities.stringJsonParser(schema.dataItemLocation, response);
                 self.mngr.extendData(modelData);
                 originalData = {};
               }

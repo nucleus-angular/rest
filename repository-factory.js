@@ -228,9 +228,9 @@ angular.module('nag.rest.repository', [
               if(_.isBoolean(forceIsArray) || _.isBoolean(schema.isArray)) {
                 if(_.isBoolean(forceIsArray)) {
                   value = forceIsArray;
-                  forceIsArray = null
+                  forceIsArray = null;
                 } else {
-                  value = schema.isArray;;
+                  value = schema.isArray;
                 }
               }
 
@@ -291,7 +291,7 @@ angular.module('nag.rest.repository', [
               if(schema.autoParse === true) {
                 data.parsedData = (isArray === true ? [] : null);
                 var dataLocation = (isArray === true ? schema.dataListLocation : schema.dataItemLocation);
-                var responseData = stringJsonParser(dataLocation, response);
+                var responseData = utilities.stringJsonParser(dataLocation, response);
 
                 //determine to parse as array or object
                 if(_(responseData).isArray()) {

@@ -10,6 +10,7 @@
  * - getFlattenItemRoute() - Return the value used as the default value for the schema's flattenItemRoute configuration (default: false);
  * - getStrictMode() - Used to determine if certain code paths should be executed like throwing certain exceptions, doing extra checking, etc... (default: false);
  * - getRequestFormatter() - Returns a function used to format the data before it is sent to the rest api with the model's .sync() method (default: function(){})
+ * - getIsArray() - Returns the default value for schema's isArray property (default: null)
  *
  * You can set these values using the nagRestConfigProvider service within a .config() like this:
  *
@@ -24,6 +25,7 @@
  *     nagRestConfigProvider.setUpdateMethod('PATCH');
  *     nagRestConfigProvider.setFlattenItemRoute(true);
  *     nagRestConfigProvider.setStrictMode(true);
+ *     nagRestConfigProvider.setIsArray(true);
  *     nagRestConfigProvider.setRequestFormatter(function(data) {
  *       return {
  *         request: {
@@ -50,6 +52,7 @@ angular.module('nag.rest.config', [
   var requestFormatter = function(){};
   var flattenItemRoute = false;
   var validateOnSync = true;
+  var isArray = null;
 
   var setStrictMode = function(value) {
     strictMode = value;
@@ -85,11 +88,15 @@ angular.module('nag.rest.config', [
     validateOnSync = value;
   };
 
+  var setIsArray = function(value) {
+    isArray = value;
+  };
+
   return {
     $get: function() {
       return {
         /**
-         * Retrieve strict mode
+         * Retrieves strict mode
          *
          * @method getStrictMode
          *
@@ -100,7 +107,7 @@ angular.module('nag.rest.config', [
         },
 
         /**
-         * Retrieve the base url for all REST remote calls
+         * Retrieves the base url for all REST remote calls
          *
          * @method getBaseUrl
          *
@@ -111,7 +118,7 @@ angular.module('nag.rest.config', [
         },
 
         /**
-         * Retrieve the default location in the response for where the data will be located
+         * Retrieves the default location in the response for where the data will be located
          *
          * @method getResponseDataLocation
          *
@@ -122,7 +129,7 @@ angular.module('nag.rest.config', [
         },
 
         /**
-         * Retrieve the default property to use as the model id
+         * Retrieves the default property to use as the model id
          *
          * @method getModelIdProperty
          *
@@ -133,7 +140,7 @@ angular.module('nag.rest.config', [
         },
 
         /**
-         * Retrieve the default HTTP method to use when send data through the REST call
+         * Retrieves the default HTTP method to use when send data through the REST call
          *
          * @method getUpdateMethod
          *
@@ -144,7 +151,7 @@ angular.module('nag.rest.config', [
         },
 
         /**
-         * Retrieve the default callback function to use to format the data before sending it through the REST call
+         * Retrieves the default callback function to use to format the data before sending it through the REST call
          *
          * @method getRequestFormatter
          *
@@ -155,7 +162,7 @@ angular.module('nag.rest.config', [
         },
 
         /**
-         * Retrieve the default value to use for setting flattenItemRoute for REST models
+         * Retrieves the default value to use for setting flattenItemRoute for REST models
          *
          * @method getFlattenItemRoute
          *
@@ -166,7 +173,7 @@ angular.module('nag.rest.config', [
         },
 
         /**
-         * Retreives whether or not models should be validated when syncing
+         * Retrieves whether or not models should be validated when syncing
          *
          * @method getValidateOnSync
          *
@@ -174,6 +181,17 @@ angular.module('nag.rest.config', [
          */
         getValidateOnSync: function() {
           return validateOnSync;
+        },
+
+        /**
+         * Retrieves schema's default isArray property value
+         *
+         * @method getIsArray
+         *
+         * @returns {boolean|null}
+         */
+        getIsArray: function() {
+          return isArray;
         },
 
         /**
@@ -244,9 +262,18 @@ angular.module('nag.rest.config', [
          *
          * @method setValidateOnSync
          *
-         * @param {boolean} Whether or not to flatten item routes for models by default
+         * @param {boolean} Whether or not to validate the model when syncing the data
          */
-        setValidateOnSync: setValidateOnSync
+        setValidateOnSync: setValidateOnSync,
+
+        /**
+         * Set the schema's default isArray property value
+         *
+         * @method setIsArray
+         *
+         * @param {boolean|null} Whether or not to treat the data as an array
+         */
+        setIsArray: setIsArray
       }
     },
     setStrictMode: setStrictMode,
@@ -256,6 +283,7 @@ angular.module('nag.rest.config', [
     setUpdateMethod: setUpdateMethod,
     setRequestFormatter: setRequestFormatter,
     setFlattenItemRoute: setFlattenItemRoute,
-    setValidateOnSync: setValidateOnSync
+    setValidateOnSync: setValidateOnSync,
+    setIsArray: setIsArray
   }
 });

@@ -2,12 +2,12 @@
   "name": "nucleus-angular-rest",
   "version": "0.3.6",
   "dependencies": {
-    "string-json-parser": "master",
+    "javascript-utilities": "master",
     "nucleus-angular-data-validation": "master"
   },
   "devDependencies": {
     "lodash": "1.2.1",
-    "unstable-angular-complete": "1.2.0rc2",
-    "jquery": "2.0.3"
+    "unstable-angular-complete": "1.2.0rc3",
+    "jquery": "1.10.2"
   }
 }

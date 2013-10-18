@@ -187,7 +187,7 @@ angular.module('nag.rest.schemaManager', [
             dataItemLocation: nagRestConfig.getResponseDataLocation(),
             autoParse: true,
             requestFormatter: nagRestConfig.getRequestFormatter(),
-            isArray: null,
+            isArray: nagRestConfig.getIsArray(),
             flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
             inherit: null
           }, schema);

@@ -1096,7 +1096,7 @@ describe('Rest Model Factory', function(){
     }, true, {
       relations: {
         project: {
-          isArray: false
+          isArray: null
         }
       }
     });
@@ -1106,10 +1106,10 @@ describe('Rest Model Factory', function(){
         response: {
           status: 'success',
           data: {
-            project: {
+            projects: [{
               projectId: 1,
               name: 'Project 1'
-            }
+            }]
           }
         }
       }, {}];
@@ -1117,8 +1117,8 @@ describe('Rest Model Factory', function(){
     var project = user.mngr.getRelation('project');
     $httpBackend.flush();
 
-    expect(_.isObject(project.mngr)).toBe(true);
-    expect(project.mngr.toJson()).toEqual({
+    expect(_.isObject(project[0].mngr)).toBe(true);
+    expect(project[0].mngr.toJson()).toEqual({
       projectId: 1,
       name: 'Project 1'
     });
