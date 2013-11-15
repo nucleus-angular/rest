@@ -10,9 +10,9 @@ module.exports = function(config) {
       'components/javascript-utilities/utilities.js',
       'components/lodash/dist/lodash.js',
       'components/jquery/jquery.js',
-      'components/unstable-angular-complete/angular.js',
+      'components/angular/angular.js',
       'components/nucleus-angular-data-validation/data-validation.js',
-      'components/unstable-angular-complete/angular-mocks.js',
+      'components/angular-mocks/angular-mocks.js',
       'tests/libraries/mocker.js',
       '*.js',
       'tests/*.js'

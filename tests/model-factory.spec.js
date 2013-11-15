@@ -1326,7 +1326,7 @@ describe('Rest Model Factory', function(){
         properties: {
           firstName: {
             validation: {
-              min: {
+              minValue: {
                 context: {
                   min: 10
                 }
@@ -1337,7 +1337,7 @@ describe('Rest Model Factory', function(){
       });
 
       expect(user.mngr.validate('firstName')).toEqual({
-        min: "must be 10 or higher"
+        minValue: "must be 10 or higher"
       });
     });
 
@@ -1346,7 +1346,7 @@ describe('Rest Model Factory', function(){
         properties: {
           firstName: {
             validation: {
-              min: {
+              minValue: {
                 context: {
                   min: 10
                 }
@@ -1366,7 +1366,7 @@ describe('Rest Model Factory', function(){
         properties: {
           firstName: {
             validation: {
-              max: {
+              maxValue: {
                 context: {
                   max: 10
                 }
@@ -1377,7 +1377,7 @@ describe('Rest Model Factory', function(){
       });
 
       expect(user.mngr.validate('firstName')).toEqual({
-        max: "must be 10 or lower"
+        maxValue: "must be 10 or lower"
       });
     });
 
@@ -1386,7 +1386,7 @@ describe('Rest Model Factory', function(){
         properties: {
           firstName: {
             validation: {
-              max: {
+              maxValue: {
                 context: {
                   max: 10
                 }
@@ -1406,7 +1406,7 @@ describe('Rest Model Factory', function(){
         properties: {
           firstName: {
             validation: {
-              range: {
+              rangeValue: {
                 context: {
                   min: 10,
                   max: 20
@@ -1418,7 +1418,7 @@ describe('Rest Model Factory', function(){
       });
 
       expect(user.mngr.validate('firstName')).toEqual({
-        range: "must be between 10 and 20"
+        rangeValue: "must be between 10 and 20"
       });
     });
 
@@ -1427,7 +1427,7 @@ describe('Rest Model Factory', function(){
         properties: {
           firstName: {
             validation: {
-              range: {
+              rangeValue: {
                 context: {
                   min: 10,
                   max: 20

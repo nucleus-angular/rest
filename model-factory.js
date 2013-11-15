@@ -1,6 +1,8 @@
 /**
  * Model factory for the rest system
  *
+ * @todo: update to have all the latest built in data validations
+ *
  * @module nag.rest.model
  */
 angular.module('nag.rest.model', [
@@ -40,34 +42,34 @@ angular.module('nag.rest.model', [
       email: {
         name: 'email',
         validator: function(value, context) {
-          return nagDataValidation.validate('email', value) || validationErrorTemplateCompiler(context.errorTemplate, context);
+          return nagDataValidation.validate(this.name, value) || validationErrorTemplateCompiler(context.errorTemplate, context);
         },
         context: {
           errorTemplate: 'must be an email'
         }
       },
-      min: {
-        name: 'min',
+      minValue: {
+        name: 'minValue',
         validator: function(value, context) {
-          return nagDataValidation.validate('min', value, context.min) || validationErrorTemplateCompiler(context.errorTemplate, context);
+          return nagDataValidation.validate(this.name, value, context.min) || validationErrorTemplateCompiler(context.errorTemplate, context);
         },
         context: {
           errorTemplate: 'must be %%min%% or higher'
         }
       },
-      max: {
-        name: 'max',
+      maxValue: {
+        name: 'maxValue',
         validator: function(value, context) {
-          return nagDataValidation.validate('max', value, context.max) || validationErrorTemplateCompiler(context.errorTemplate, context);
+          return nagDataValidation.validate(this.name, value, context.max) || validationErrorTemplateCompiler(context.errorTemplate, context);
         },
         context: {
           errorTemplate: 'must be %%max%% or lower'
         }
       },
-      range: {
-        name: 'range',
+      rangeValue: {
+        name: 'rangeValue',
         validator: function(value, context) {
-          return nagDataValidation.validate('range', value, context.min, context.max) || validationErrorTemplateCompiler(context.errorTemplate, context);
+          return nagDataValidation.validate(this.name, value, context.min, context.max) || validationErrorTemplateCompiler(context.errorTemplate, context);
         },
         context: {
           errorTemplate: 'must be between %%min%% and %%max%%'
