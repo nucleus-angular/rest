@@ -3,12 +3,12 @@
   "version": "0.3.6",
   "dependencies": {
     "javascript-utilities": "master",
-    "nucleus-angular-data-validation": "master"
+    "data-validation": "master"
   },
   "devDependencies": {
-    "lodash": "1.2.1",
-    "angular": "1.2.0",
-    "angular-mocks": "1.2.0",
+    "lodash": "2.x.x",
+    "angular": "1.2.x",
+    "angular-mocks": "1.2.x",
     "jquery": "1.10.x"
   }
 }

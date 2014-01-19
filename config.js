@@ -40,9 +40,7 @@
  * @module nag.rest.config
  * @ngservice nagRestConfig
  */
-angular.module('nag.rest.config', [
-  'nag.dataValidation'
-])
+angular.module('nag.rest.config', [])
 .provider('nagRestConfig', function() {
   var strictMode = false;
   var baseUrl = '';

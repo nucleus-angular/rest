@@ -11,7 +11,7 @@ module.exports = function(config) {
       'components/lodash/dist/lodash.js',
       'components/jquery/jquery.js',
       'components/angular/angular.js',
-      'components/nucleus-angular-data-validation/data-validation.js',
+      'components/data-validation/data-validation.js',
       'components/angular-mocks/angular-mocks.js',
       'tests/libraries/mocker.js',
       '*.js',

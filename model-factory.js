@@ -8,8 +8,7 @@
 angular.module('nag.rest.model', [
   'nag.rest.config',
   'nag.rest.schemaManager',
-  'nag.rest.repository',
-  'nag.dataValidation'
+  'nag.rest.repository'
 ])
 .factory('nagRestModelFactory', [
   '$injector',
@@ -17,8 +16,7 @@ angular.module('nag.rest.model', [
   '$http',
   'nagRestSchemaManager',
   'nagRestConfig',
-  'nagDataValidation',
-  function($injector, $q, $http, nagRestSchemaManager, nagRestConfig, nagDataValidation) {
+  function($injector, $q, $http, nagRestSchemaManager, nagRestConfig) {
     var validationErrorTemplateCompiler = function(template, variables) {
       if(_.isObject(variables)) {
         _.forEach(variables, function(value, variableName) {
@@ -33,7 +31,7 @@ angular.module('nag.rest.model', [
       required: {
         name: 'required',
         validator: function(value, context) {
-          return nagDataValidation.validate('notEmpty', value) || validationErrorTemplateCompiler(context.errorTemplate, context);
+          return dataValidation.validate('notEmpty', value) || validationErrorTemplateCompiler(context.errorTemplate, context);
         },
         context: {
           errorTemplate: 'is required'
@@ -42,7 +40,7 @@ angular.module('nag.rest.model', [
       email: {
         name: 'email',
         validator: function(value, context) {
-          return nagDataValidation.validate(this.name, value) || validationErrorTemplateCompiler(context.errorTemplate, context);
+          return dataValidation.validate(this.name, value) || validationErrorTemplateCompiler(context.errorTemplate, context);
         },
         context: {
           errorTemplate: 'must be an email'
@@ -51,7 +49,7 @@ angular.module('nag.rest.model', [
       minValue: {
         name: 'minValue',
         validator: function(value, context) {
-          return nagDataValidation.validate(this.name, value, context.min) || validationErrorTemplateCompiler(context.errorTemplate, context);
+          return dataValidation.validate(this.name, value, context.min) || validationErrorTemplateCompiler(context.errorTemplate, context);
         },
         context: {
           errorTemplate: 'must be %%min%% or higher'
@@ -60,7 +58,7 @@ angular.module('nag.rest.model', [
       maxValue: {
         name: 'maxValue',
         validator: function(value, context) {
-          return nagDataValidation.validate(this.name, value, context.max) || validationErrorTemplateCompiler(context.errorTemplate, context);
+          return dataValidation.validate(this.name, value, context.max) || validationErrorTemplateCompiler(context.errorTemplate, context);
         },
         context: {
           errorTemplate: 'must be %%max%% or lower'
@@ -69,7 +67,7 @@ angular.module('nag.rest.model', [
       rangeValue: {
         name: 'rangeValue',
         validator: function(value, context) {
-          return nagDataValidation.validate(this.name, value, context.min, context.max) || validationErrorTemplateCompiler(context.errorTemplate, context);
+          return dataValidation.validate(this.name, value, context.min, context.max) || validationErrorTemplateCompiler(context.errorTemplate, context);
         },
         context: {
           errorTemplate: 'must be between %%min%% and %%max%%'
