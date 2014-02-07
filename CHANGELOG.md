@@ -2,6 +2,23 @@
 
 Each change log are assumed to be accompanied by associated unit test and documentation updates.
 
+## 0.3.6
+* added support for defining inherited methods in schema definitions (#28)
+
+## 0.3.5
+* fixed bug where model sync was not using full route
+
+## 0.3.4
+* added support for data validation (#3)
+
+## 0.3.3
+* added support for custom getters/setters for modal properties
+* removed ES5 Shim since we are no longer support IE 8 (#20)
+* added ability to mapping incoming data to different property names within the model (#22)
+* fixed bug where base url was not being accounted for (#24)
+* ModelFactory.create() now properly normalizes initail data( #25)
+* Misc changes and clean up
+
 ## 0.3.0
 
 * IE 8 support dropped
