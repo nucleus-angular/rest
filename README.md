@@ -45,3 +45,97 @@ This is still in early development and as such, I can't guarantee that backwards
 ### Pull Requests
 
 TBD
+
+# Quick Guide (WORK IN PROGRESS)
+
+This is only provided as a quick start guide and will not cover every single possible feature.  All features should have inline documentation with a YUI DOCS sytle documentation and they is a documentation generator in the works.
+
+In order to get started we need to create and object to interact with the REST end-point.  In order to create that object, you need to define the schema for the model.  You use the nagRestSchemaManager in order to add a schema:
+
+```javascript
+var userSchmea = {
+  //route the the REST end-point
+  route: '/users',
+  
+  //list of properties for the model
+  properties: {
+    id: {
+      //whether or not to send the property to the REST end-point when syncing data
+      sync: false,
+      
+      //if the name of the property returned from the REST end-point does not match the name of the
+      //property for the model, you can define it here
+      remoteProperty: 'USER_ID',
+      
+      //if you need to do something every time you need to access the property, you can provide a
+      //getter function
+      getter: funtion(value) {
+        return '#' + value;
+      },
+      
+      //if you need to do something every time you need to set the property, you can provide a
+      //setter function
+      seter: function(value) {
+        return '#' + value;
+      }
+    },
+    firstName: {},
+    lastName: {},
+    username: {},
+    managerId: {}
+  },
+  
+  //you can define relations for models
+  relations: {
+    manager: {
+      //the linking resources schema name
+      resource: 'user',
+      
+      //the property the links to the relationship
+      property: 'managerId'
+    }
+  },
+  
+  //where in the REST end-point response the data is located for calls that return multiple objects 
+  dataListLocation: 'response.data.users',
+  
+  //where in the REST end-point response the data is located for calls that return a single object 
+  dataItemLocation: 'response.data.user'
+};
+  
+nagRestSchemaManager.add('user', userSchema);
+```
+
+***All internal methods on repository and models are attached to a mngr property to help make sure you can add whatever property/methods (expect mngr) to be base objects without conflicting with this system.***
+
+With the schema defined, you can now create a repository which will access as the main access point to the REST end-point:
+
+```javascript
+var userRepository = nagRestRepositoryFactory.create('user');
+```
+
+There are a number of things that can be done the respository:
+
+```javascript
+//create a new object, optional passing default data
+var user = userRepository.mngr.create({
+  firstName: 'John',
+  lastName: 'Doe'
+});
+
+//find a single object
+var user = userRepository.mngr.find(1);
+
+//find multiple objects
+var users = userRepository.mngr.find({
+  firstName: 'John'
+});
+```
+
+In order to save an object, you can call the sync method:
+
+```javascript
+user.mngr.sync();
+```
+
+# QUICK GUIDE WORK IN PROGRESS
