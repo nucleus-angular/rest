@@ -6,6 +6,10 @@
     "outdir": "./docs",
     "jsonDir": "json",
     "webDir": "web",
+    "docApp": {
+      "url": "https://github.com/ryanzec/angular-doc-app/archive/master.zip",
+      "zipPath": "/angular-doc-app-master"
+    },
     "paths": [
       "."
     ],
