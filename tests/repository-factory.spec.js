@@ -560,6 +560,40 @@ describe('Rest Base Repository', function(){
     });
   });
 
+  it("should support JSONP", function() {
+    var repository = nagRestRepositoryFactory.create('user');
+
+    $httpBackend.expect('JSONP', '/users/1?callback=JSON_CALLBACK').respond(function(method, url, data) {
+      return [200, {
+        response: {
+          status: 'success',
+          data: {
+            user: {
+              id: 1,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'john.doe',
+              managerId: null
+            }
+          }
+        }
+      }, {}];
+    });
+    var model = repository.mngr.find(1, {
+      method: 'JSONP'
+    });
+    $httpBackend.flush();
+
+    expect(_.isObject(model.mngr)).toBe(true);
+    expect(model.mngr.toJson()).toEqual({
+      id: 1,
+      firstName: 'John',
+      lastName: 'Doe',
+      username: 'john.doe',
+      managerId: null
+    });
+  });
+
   /*******************************************************************************************************************/
   /***** IS ARRAY ****************************************************************************************************/
   /*******************************************************************************************************************/

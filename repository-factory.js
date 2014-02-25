@@ -247,7 +247,7 @@ angular.module('nag.rest.repository', [
               return value;
             };
 
-            params = params || {};
+            params = params || null;
             overrideHttpConfig = overrideHttpConfig || {};
 
             var idPropertyValue;
@@ -256,12 +256,16 @@ angular.module('nag.rest.repository', [
 
             var httpConfig = _.extend({
               url: url,
-              method: 'GET',
-              params: params
+              method: 'GET'
             }, overrideHttpConfig);
 
             if(_.isPlainObject(searchData) && Object.keys(searchData).length > 0) {
-              _.extend(httpConfig.params, searchData);
+              params = params || {};
+              _.extend(params, searchData);
+            }
+
+            if(params) {
+              httpConfig.params = params;
             }
 
             if(_.isNumber(searchData) || _.isString(searchData)) {
@@ -280,9 +284,12 @@ angular.module('nag.rest.repository', [
             var deferred = $q.defer();
             value.then = deferred.promise.then;
 
+            if(httpConfig.method === 'JSONP') {
+              httpConfig.url += '?callback=JSON_CALLBACK';
+            }
+
             $http(httpConfig)
             .success(function(response) {
-
               var data = {
                 rawResponse: response
               }

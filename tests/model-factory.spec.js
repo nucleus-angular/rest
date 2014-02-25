@@ -1238,7 +1238,7 @@ describe('Rest Model Factory', function(){
         properties: {
           firstName: {
             setter: function(value) {
-              return '#' + value + '!';
+              return '!' + value + '#';
             }
           }
         }
@@ -1246,7 +1246,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 'Test';
 
-      expect(user.firstName).toBe('#Test!');
+      expect(user.firstName).toBe('!Test#');
     });
   });
 
