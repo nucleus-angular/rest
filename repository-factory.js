@@ -169,9 +169,9 @@ angular.module('nag.rest.repository', [
          *
          * @method mngr.find
          *
-         * @param {object} [params] Key/Value pairing of parameters to pass in the URL
-         * @param {object} [headers] Key/Vlaue pairing of headers to pass along with the request
-         * @param {object} [postData] Key/Value paring of data to pass in teh content of a POST
+         * @param {int|string|object} [searchData] Data to use to request data
+         * @param {object} [overrideHttpConfig] Object to override any $http configurations
+         * @param {object} [params] Data that should be sent in the URL as a query string variable
          *
          * @return {object|array} Either a model or an array or model, the object also has the promises .then method attach to access data that way
          *
@@ -192,7 +192,8 @@ angular.module('nag.rest.repository', [
          * // GET /users/123
          * var user = userRepository.mngr.find(123);
          *
-         * //The second parameter of find() is an object of header/value pairs
+         * //The second parameter allows you to override the htto configuration values.  For example, if you wanted to send custom headers
+         * //you could do this:
          *
          * // GET /users with request header x-user:test
          * var users = userRepository.mngr.find({}, {
@@ -214,16 +215,25 @@ angular.module('nag.rest.repository', [
          * // }
          * var gmailUsers = userRepository.mngr.find({
          *   query: 'data',
-         * }, {}, true, {
-         *   filters: [{
-         *     field: 'email',
-         *     condition: 'like',
-         *     value: '%@gmail.com'
-         *   }]
+         * }, {
+         *   method: 'POST',
+         *   data: {
+         *     filters: [{
+         *       field: 'email',
+         *       condition: 'like',
+         *       value: '%@gmail.com'
+         *     }]
+         *   }
+         * });
+         *
+         * //The third parameter allows you to pass in any data you wish to be sent in the url as a query string variable
+         * // GET /users/1?foo=bar
+         * userRepository.mngr.find(1, {}, {
+         *   foo: 'bar'
          * });
          */
         find: {
-          value: function(params, headers, postData) {
+          value: function(searchData, overrideHttpConfig, params) {
             var getIsArray = function(value) {
               if(_.isBoolean(forceIsArray) || _.isBoolean(schema.isArray)) {
                 if(_.isBoolean(forceIsArray)) {
@@ -238,39 +248,30 @@ angular.module('nag.rest.repository', [
             };
 
             params = params || {};
-            headers = headers || {};
-            postData = postData || {};
+            overrideHttpConfig = overrideHttpConfig || {};
 
             var idPropertyValue;
             var isArray = true;
             var url = self.mngr.fullRoute;
 
-            var httpConfig = {
+            var httpConfig = _.extend({
               url: url,
-              method: 'GET'
-            };
+              method: 'GET',
+              params: params
+            }, overrideHttpConfig);
 
-            if(_.isPlainObject(params) && Object.keys(params).length > 0) {
-              httpConfig.params = params;
+            if(_.isPlainObject(searchData) && Object.keys(searchData).length > 0) {
+              _.extend(httpConfig.params, searchData);
             }
 
-            if(Object.keys(headers).length > 0) {
-              httpConfig.headers = headers;
-            }
-
-            if(Object.keys(postData).length > 0) {
-              httpConfig.data = postData;
-              httpConfig.method = 'POST';
-            }
-
-            if(_.isNumber(params) || _.isString(params)) {
+            if(_.isNumber(searchData) || _.isString(searchData)) {
               isArray = false;
 
               if(schema.flattenItemRoute === true) {
                 url = url.substr(url.lastIndexOf('/'));
               }
 
-              httpConfig.url = url + '/' + params;
+              httpConfig.url = url + '/' + searchData;
             }
 
             isArray = getIsArray(isArray);

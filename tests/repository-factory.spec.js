@@ -454,7 +454,9 @@ describe('Rest Base Repository', function(){
   it("should be able to send custom header with the find request", function() {
     var repository = nagRestRepositoryFactory.create('user');
 
-    $httpBackend.expect('GET', '/users?firstName=John').respond(function(method, url, data) {
+    $httpBackend.expect('GET', '/users?firstName=John', undefined, function(headers) {
+      return headers['X-Custom-Header-UT'] === 'unit-test';
+    }).respond(function(method, url, data) {
       return [200, {
         response: {
           status: 'success',
@@ -479,7 +481,9 @@ describe('Rest Base Repository', function(){
     var models = repository.mngr.find({
       firstName: 'John'
     }, {
-      'X-Custom-Header-UT': 'unit-test'
+      headers: {
+        'X-Custom-Header-UT': 'unit-test'
+      }
     });
     $httpBackend.flush();
 
@@ -527,12 +531,15 @@ describe('Rest Base Repository', function(){
     });
     var models = repository.mngr.find({
       firstName: 'John'
-    }, null, {
-      filters: [{
-        field: 'username',
-        condition: 'LIKE',
-        value: 'john.%'
-      }]
+    }, {
+      method: 'POST',
+      data: {
+        filters: [{
+          field: 'username',
+          condition: 'LIKE',
+          value: 'john.%'
+        }]
+      }
     });
     $httpBackend.flush();
 
@@ -658,12 +665,15 @@ describe('Rest Base Repository', function(){
     });
     var model = repository.mngr.forceIsArray(false).find({
       firstName: 'John'
-    }, null, {
-      filters: [{
-        field: 'username',
-        condition: 'LIKE',
-        value: 'john.%'
-      }]
+    }, {
+      method: 'POST',
+      data: {
+        filters: [{
+          field: 'username',
+          condition: 'LIKE',
+          value: 'john.%'
+        }]
+      }
     });
     $httpBackend.flush();
 
@@ -764,6 +774,91 @@ describe('Rest Base Repository', function(){
         firstName: 'John',
         lastName: 'Doe',
         username: 'john.doe',
+        managerId: null
+      });
+    });
+  });
+
+  describe("Query Strings", function() {
+    it("should be supported for the find() method", function() {
+      var repository = nagRestRepositoryFactory.create('user');
+
+      $httpBackend.expect('GET', '/users/1?foo=bar').respond(function(method, url, data) {
+        return [200, {
+          response: {
+            status: 'success',
+            data: {
+              user: {
+                id: 1,
+                firstName: 'John',
+                lastName: 'Doe',
+                username: 'john.doe',
+                managerId: null
+              }
+            }
+          }
+        }, {}];
+      });
+      var model = repository.mngr.find(1, {}, {
+        foo: 'bar'
+      });
+      $httpBackend.flush();
+
+      expect(_.isObject(model.mngr)).toBe(true);
+      expect(model.mngr.toJson()).toEqual({
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'john.doe',
+        managerId: null
+      });
+    });
+
+    it("should be supported for the find() method when using mutliple values for the find", function() {
+      var repository = nagRestRepositoryFactory.create('user');
+
+      $httpBackend.expect('GET', '/users?firstName=John&foo=bar').respond(function(method, url, data) {
+        return [200, {
+          response: {
+            status: 'success',
+            data: {
+              users: [{
+                id: 1,
+                firstName: 'John',
+                lastName: 'Doe',
+                username: 'john.doe',
+                managerId: null
+              }, {
+                id: 2,
+                firstName: 'John',
+                lastName: 'Doe2',
+                username: 'john.doe2',
+                managerId: null
+              }]
+            }
+          }
+        }, {}];
+      });
+      var models = repository.mngr.find({
+        firstName: 'John'
+      }, {}, {
+        foo: 'bar'
+      });
+      $httpBackend.flush();
+
+      expect(models.length).toBe(2);
+      expect(models[0].mngr.toJson()).toEqual({
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        username: 'john.doe',
+        managerId: null
+      });
+      expect(models[1].mngr.toJson()).toEqual({
+        id: 2,
+        firstName: 'John',
+        lastName: 'Doe2',
+        username: 'john.doe2',
         managerId: null
       });
     });
