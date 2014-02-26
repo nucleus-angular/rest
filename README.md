@@ -7,7 +7,23 @@ This component of Nucleus Angular is designed to allow you to easily use a REST 
 
 An I invite you to have a look at those solutions if this library does not seem to feel like a right fit for you.
 
-If you want to get into the meet of the documentation, skip to <a href="#installation">Installation</a> or <a href="#basic-guide">Basic Guide</a>.
+## Installation
+
+Installation is a relatively easy process.  You can install with bower:
+
+```bower instal nucleus-angular-rest```
+
+Then you need to include the following files:
+
+```
+module.js
+config.js
+schema-manager.js
+repository-manager.js
+model-manager.js
+```
+
+It is quite a few files however you should be mining and combining your javascript files (even libraries that you are including).  That being said, at some point before 1.0, I will have a build process that will min and combine those files into one for easier inclusion.
 
 ## LICENSE
 
