@@ -25,6 +25,10 @@ model-manager.js
 
 It is quite a few files however you should be mining and combining your javascript files (even libraries that you are including).  That being said, at some point before 1.0, I will have a build process that will min and combine those files into one for easier inclusion.
 
+## Documentation
+
+There is a <a href="#quick-guide-work-in-progress">Quick Guide</a> available at the bottom of this README.  There is also documentation that is generated from the docblocks comments in the code that is available at http://nadocs.ryanzeclabs.com/rest
+
 ## LICENSE
 
 MIT
