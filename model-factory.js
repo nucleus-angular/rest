@@ -122,19 +122,28 @@ angular.module('nag.rest.model', [
       modelProperties = {}
       deletedFlag = false;
 
-      extendData = function(newData, setRemoteFlag) {
-        newData = nagRestSchemaManager.normalizeData(schema, newData);
-        _.merge(data, newData);
-
-        if(setRemoteFlag === true) {
-          remoteFlag = true;
-        }
-      };
-
       //initialization code
       overrideSchemaOptions = overrideSchemaOptions || {};
       schema = nagRestSchemaManager.get(resourceName, overrideSchemaOptions);
-      extendData(initialData, remoteFlag);
+
+      extendData = function(newData, setRemoteFlag) {
+        var objectKeys = Object.keys(newData);
+
+        if(objectKeys.length > 0) {
+          newData = nagRestSchemaManager.normalizeData(schema, newData);
+
+          //redefine to make sure we are using the correct property names
+          objectKeys = Object.keys(newData);
+          
+          _.forEach(objectKeys, function(value) {
+            self[value] = newData[value];
+          });
+
+          if(setRemoteFlag === true) {
+            remoteFlag = true;
+          }
+        }
+      };
 
       //setup properties for object
       var modelProperties = {};
@@ -173,6 +182,8 @@ angular.module('nag.rest.model', [
       }, this);
 
       Object.defineProperties(this, modelProperties);
+
+      extendData(initialData, remoteFlag);
 
       //extend constructor is available
       if(schema.inherit) {

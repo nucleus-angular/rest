@@ -248,6 +248,41 @@ describe('Rest Schema Manager', function(){
     expect(retrievedSchema).toEqual(expected);
   });
 
+  it('should be able to override deep objects', function() {
+    nagRestSchemaManager.add('user', schema);
+
+    var retrievedSchema = nagRestSchemaManager.get('user', {
+      properties: {
+        id: {
+          sync: true
+        }
+      }
+    });
+
+    var expected = {
+      route: '/users',
+      idProperty: nagRestConfig.getModelIdProperty(),
+      properties: {
+        id: {
+          sync: true
+        }
+      },
+      relations: {},
+      dataListLocation: nagRestConfig.getResponseDataLocation(),
+      dataItemLocation: nagRestConfig.getResponseDataLocation(),
+      autoParse: true,
+      isArray: null,
+      flattenItemRoute: nagRestConfig.getFlattenItemRoute(),
+      inherit: null
+    };
+
+    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
+
+    delete retrievedSchema.requestFormatter;
+
+    expect(retrievedSchema).toEqual(expected);
+  });
+
   it('should not modified the stored schema when a pulled schema is modified', function() {
     nagRestSchemaManager.add('user', schema);
 

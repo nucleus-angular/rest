@@ -1791,4 +1791,53 @@ describe('Rest Model Factory', function(){
       expect(model.getPrivateData()).toEqual('this data is private');
     });
   });
+
+  it("should call setters on initial data load", function() {
+    var model = nagRestModelFactory.create('user', {
+      id: '1',
+      firstName: 'John',
+      username: 'john.doe'
+    }, true, {
+      properties: {
+        id: {
+          setter: function(value) {
+            return parseInt(value);
+          }
+        }
+      }
+    });
+
+    expect(model.mngr.toJson()).toEqual({
+      id: 1,
+      firstName: 'John',
+      lastName: null,
+      username: 'john.doe',
+      managerId: null
+    });
+  });
+
+  it("should call setters when extending data", function() {
+    var model = nagRestModelFactory.create('user', {}, true, {
+      properties: {
+        id: {
+          setter: function(value) {
+            return parseInt(value);
+          }
+        }
+      }
+    });
+    model.mngr.extendData({
+      id: '1',
+      firstName: 'John',
+      username: 'john.doe'
+    });
+
+    expect(model.mngr.toJson()).toEqual({
+      id: 1,
+      firstName: 'John',
+      lastName: null,
+      username: 'john.doe',
+      managerId: null
+    });
+  });
 });
