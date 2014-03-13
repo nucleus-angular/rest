@@ -1,0 +1,15 @@
+{
+  "name": "nucleus-angular-rest",
+  "private": true,
+  "version": "0.3.6",
+  "dependencies": {},
+  "devDependencies": {
+    "karma-mocha": "0.1.1",
+    "karma-chai": "0.0.2",
+    "karma-sinon": "1.0.2",
+    "karma-phantomjs-launcher": "0.1.2"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  }
+}

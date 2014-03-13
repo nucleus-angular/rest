@@ -2,7 +2,7 @@ module.exports = function(config) {
   config.set({
     autoWatch: false,
     basePath: '..',
-    frameworks: ['jasmine'],
+    frameworks: ['mocha', 'chai', 'sinon'],
     browsers: ['PhantomJS'],
     singleRun: true,
     preprocessors: {},

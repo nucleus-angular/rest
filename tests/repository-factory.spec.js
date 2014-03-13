@@ -83,7 +83,7 @@ describe('Rest Base Repository', function(){
   it("should be able to create and instance of a repository", function() {
     var repository = nagRestRepositoryFactory.create('user');
 
-    expect(repository.mngr.resourceName).toEqual('user');
+    expect(repository.mngr.resourceName).to.equal('user');
   });
 
   it("should be able to override schema values", function() {
@@ -128,7 +128,7 @@ describe('Rest Base Repository', function(){
       inherit: null
     };
 
-    expect(repository.mngr.schema).toEqual(expectedSchema);
+    expect(repository.mngr.schema).to.deep.equal(expectedSchema);
   });
 
   /*******************************************************************************************************************/
@@ -139,7 +139,7 @@ describe('Rest Base Repository', function(){
     var repository = nagRestRepositoryFactory.create('user');
     var model = repository.mngr.create();
 
-    expect(model.mngr.state).toBe('new');
+    expect(model.mngr.state).to.equal('new');
   });
 
   it("should be able to create instance of model with initial data", function() {
@@ -149,7 +149,7 @@ describe('Rest Base Repository', function(){
       lastName: 'Doe'
     });
 
-    expect(model.mngr.toJson()).toEqual({
+    expect(model.mngr.toJson()).to.deep.equal({
       id: null,
       firstName: 'John',
       lastName: 'Doe',
@@ -166,7 +166,7 @@ describe('Rest Base Repository', function(){
       lastName: 'Doe'
     }, true);
 
-    expect(model.mngr.state).toBe('loaded');
+    expect(model.mngr.state).to.equal('loaded');
   });
 
   it("should be able to create instance of model with a customized schema", function() {
@@ -216,7 +216,7 @@ describe('Rest Base Repository', function(){
       inherit: null
     };
 
-    expect(model.mngr.schema).toEqual(expectedSchema);
+    expect(model.mngr.schema).to.deep.equal(expectedSchema);
   });
 
   /*******************************************************************************************************************/
@@ -226,21 +226,21 @@ describe('Rest Base Repository', function(){
   it("should be able to generate route", function() {
     var repository = nagRestRepositoryFactory.create('user');
 
-    expect(repository.mngr.route).toBe('/users');
+    expect(repository.mngr.route).to.equal('/users');
   });
 
   it("should not include base url in route property", function() {
     nagRestConfig.setBaseUrl('/api');
     var repository = nagRestRepositoryFactory.create('user');
 
-    expect(repository.mngr.route).toBe('/users');
+    expect(repository.mngr.route).to.equal('/users');
   });
 
   it("should include base url in full route property", function() {
     nagRestConfig.setBaseUrl('/api');
     var repository = nagRestRepositoryFactory.create('user');
 
-    expect(repository.mngr.fullRoute).toBe('/api/users');
+    expect(repository.mngr.fullRoute).to.equal('/api/users');
   });
 
   /*******************************************************************************************************************/
@@ -278,7 +278,7 @@ describe('Rest Base Repository', function(){
     }).then(function(data) {
       models = data.parsedData;
 
-      expect(data.rawResponse).toEqual({
+      expect(data.rawResponse).to.deep.equal({
         response: {
           status: 'success',
           data: {
@@ -303,15 +303,15 @@ describe('Rest Base Repository', function(){
     });
     $httpBackend.flush();
 
-    expect(models.length).toBe(2);
-    expect(models[0].mngr.toJson()).toEqual({
+    expect(models.length).to.equal(2);
+    expect(models[0].mngr.toJson()).to.deep.equal({
       id: 1,
       firstName: 'John',
       lastName: 'Doe',
       username: 'john.doe',
       managerId: null
     });
-    expect(models[1].mngr.toJson()).toEqual({
+    expect(models[1].mngr.toJson()).to.deep.equal({
       id: 2,
       firstName: 'John',
       lastName: 'Doe2',
@@ -350,15 +350,15 @@ describe('Rest Base Repository', function(){
     });
     $httpBackend.flush();
 
-    expect(models.length).toBe(2);
-    expect(models[0].mngr.toJson()).toEqual({
+    expect(models.length).to.equal(2);
+    expect(models[0].mngr.toJson()).to.deep.equal({
       id: 1,
       firstName: 'John',
       lastName: 'Doe',
       username: 'john.doe',
       managerId: null
     });
-    expect(models[1].mngr.toJson()).toEqual({
+    expect(models[1].mngr.toJson()).to.deep.equal({
       id: 2,
       firstName: 'John',
       lastName: 'Doe2',
@@ -390,7 +390,7 @@ describe('Rest Base Repository', function(){
     repository.mngr.find(1).then(function(data) {
       model = data.parsedData;
 
-      expect(data.rawResponse).toEqual({
+      expect(data.rawResponse).to.deep.equal({
         response: {
           status: 'success',
           data: {
@@ -409,8 +409,8 @@ describe('Rest Base Repository', function(){
     });
     $httpBackend.flush();
 
-    expect(_.isObject(model.mngr)).toBe(true);
-    expect(model.mngr.toJson()).toEqual({
+    expect(_.isObject(model.mngr)).to.equal(true);
+    expect(model.mngr.toJson()).to.deep.equal({
       id: 1,
       firstName: 'John',
       lastName: 'Doe',
@@ -441,8 +441,8 @@ describe('Rest Base Repository', function(){
     var model = repository.mngr.find(1);
     $httpBackend.flush();
 
-    expect(_.isObject(model.mngr)).toBe(true);
-    expect(model.mngr.toJson()).toEqual({
+    expect(_.isObject(model.mngr)).to.equal(true);
+    expect(model.mngr.toJson()).to.deep.equal({
       id: 1,
       firstName: 'John',
       lastName: 'Doe',
@@ -487,21 +487,7 @@ describe('Rest Base Repository', function(){
     });
     $httpBackend.flush();
 
-    expect(models.length).toBe(2);
-    expect(models[0].mngr.toJson()).toEqual({
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      username: 'john.doe',
-      managerId: null
-    });
-    expect(models[1].mngr.toJson()).toEqual({
-      id: 2,
-      firstName: 'John',
-      lastName: 'Doe2',
-      username: 'john.doe2',
-      managerId: null
-    });
+    expect(models.length).to.equal(2);
   });
 
   it("should be able to find data with the POST http method", function() {
@@ -543,21 +529,7 @@ describe('Rest Base Repository', function(){
     });
     $httpBackend.flush();
 
-    expect(models.length).toBe(2);
-    expect(models[0].mngr.toJson()).toEqual({
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      username: 'john.doe',
-      managerId: null
-    });
-    expect(models[1].mngr.toJson()).toEqual({
-      id: 2,
-      firstName: 'John',
-      lastName: 'Doe2',
-      username: 'john.doe2',
-      managerId: null
-    });
+    expect(models.length).to.equal(2);
   });
 
   it("should support JSONP", function() {
@@ -584,14 +556,7 @@ describe('Rest Base Repository', function(){
     });
     $httpBackend.flush();
 
-    expect(_.isObject(model.mngr)).toBe(true);
-    expect(model.mngr.toJson()).toEqual({
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      username: 'john.doe',
-      managerId: null
-    });
+    expect(_.isObject(model.mngr)).to.be.true;
   });
 
   /*******************************************************************************************************************/
@@ -623,14 +588,7 @@ describe('Rest Base Repository', function(){
     var session = repository.mngr.find();
     $httpBackend.flush();
 
-    expect(_.isObject(session.mngr)).toBe(true);
-    expect(session.mngr.toJson()).toEqual({
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      username: 'john.doe',
-      managerId: null
-    });
+    expect(_.isObject(session.mngr)).to.be.true;
   });
 
   it("should be able to force the next request to get the data as an array even though the url says it should be a single record", function() {
@@ -661,21 +619,7 @@ describe('Rest Base Repository', function(){
     var models = repository.mngr.forceIsArray(true).find(1);
     $httpBackend.flush();
 
-    expect(models.length).toBe(2);
-    expect(models[0].mngr.toJson()).toEqual({
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      username: 'john.doe',
-      managerId: null
-    });
-    expect(models[1].mngr.toJson()).toEqual({
-      id: 2,
-      firstName: 'John',
-      lastName: 'Doe2',
-      username: 'john.doe2',
-      managerId: null
-    });
+    expect(models.length).to.equal(2);
   });
 
   it("should be able to get data as a single record even though the url show it as a multi-record result", function() {
@@ -711,14 +655,7 @@ describe('Rest Base Repository', function(){
     });
     $httpBackend.flush();
 
-    expect(_.isObject(model.mngr)).toBe(true);
-    expect(model.mngr.toJson()).toEqual({
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      username: 'john.doe',
-      managerId: null
-    });
+    expect(_.isObject(model.mngr)).to.be.true;
   });
 
   /*******************************************************************************************************************/
@@ -750,14 +687,7 @@ describe('Rest Base Repository', function(){
     var model = repository.mngr.find(1);
     $httpBackend.flush();
 
-    expect(_.isObject(model.mngr)).toBe(true);
-    expect(model.mngr.toJson()).toEqual({
-      id: 1,
-      firstName: 'John',
-      lastName: 'Doe',
-      username: 'john.doe',
-      managerId: null
-    });
+    expect(_.isObject(model.mngr)).to.be.true;
   });
 
   /*******************************************************************************************************************/
@@ -802,8 +732,7 @@ describe('Rest Base Repository', function(){
       var user = repository.mngr.find(1);
       $httpBackend.flush();
 
-      expect(user.firstName).toBe('John');
-      expect(user.mngr.toJson()).toEqual({
+      expect(user.mngr.toJson()).to.deep.equal({
         id: 1,
         firstName: 'John',
         lastName: 'Doe',
@@ -838,14 +767,7 @@ describe('Rest Base Repository', function(){
       });
       $httpBackend.flush();
 
-      expect(_.isObject(model.mngr)).toBe(true);
-      expect(model.mngr.toJson()).toEqual({
-        id: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'john.doe',
-        managerId: null
-      });
+      expect(_.isObject(model.mngr)).to.be.true;
     });
 
     it("should be supported for the find() method when using mutliple values for the find", function() {
@@ -880,21 +802,7 @@ describe('Rest Base Repository', function(){
       });
       $httpBackend.flush();
 
-      expect(models.length).toBe(2);
-      expect(models[0].mngr.toJson()).toEqual({
-        id: 1,
-        firstName: 'John',
-        lastName: 'Doe',
-        username: 'john.doe',
-        managerId: null
-      });
-      expect(models[1].mngr.toJson()).toEqual({
-        id: 2,
-        firstName: 'John',
-        lastName: 'Doe2',
-        username: 'john.doe2',
-        managerId: null
-      });
+      expect(models.length).to.equal(2);
     });
   });
 });

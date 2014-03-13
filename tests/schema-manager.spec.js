@@ -71,11 +71,11 @@ describe('Rest Schema Manager', function(){
 
     var retrievedSchema = nagRestSchemaManager.get('user');
 
-    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
+    expect(_.isFunction(retrievedSchema.requestFormatter)).to.be.true;
 
     delete retrievedSchema.requestFormatter;
 
-    expect(retrievedSchema).toEqual(expected);
+    expect(retrievedSchema).to.deep.equal(expected);
   });
 
   it('should be able to add multiple schemas and get schemas', function() {
@@ -119,14 +119,14 @@ describe('Rest Schema Manager', function(){
     var userSchema = nagRestSchemaManager.get('user');
     var projectSchema = nagRestSchemaManager.get('project');
 
-    expect(_.isFunction(userSchema.requestFormatter)).toBe(true);
-    expect(_.isFunction(projectSchema.requestFormatter)).toBe(true);
+    expect(_.isFunction(userSchema.requestFormatter)).to.be.true;
+    expect(_.isFunction(projectSchema.requestFormatter)).to.be.true;
 
     delete userSchema.requestFormatter;
     delete projectSchema.requestFormatter;
 
-    expect(userSchema).toEqual(expected);
-    expect(projectSchema).toEqual(expected2);
+    expect(userSchema).to.deep.equal(expected);
+    expect(projectSchema).to.deep.equal(expected2);
   });
 
   it('should only be able to add objects as schemas', function() {
@@ -135,17 +135,17 @@ describe('Rest Schema Manager', function(){
     nagRestSchemaManager.add('user3', true);
     nagRestSchemaManager.add('user4', function() {});
 
-    expect(nagRestSchemaManager.get('user1')).toBeUndefined();
-    expect(nagRestSchemaManager.get('user2')).toBeUndefined();
-    expect(nagRestSchemaManager.get('user3')).toBeUndefined();
-    expect(nagRestSchemaManager.get('user4')).toBeUndefined();
+    expect(nagRestSchemaManager.get('user1')).to.be.undefined;
+    expect(nagRestSchemaManager.get('user2')).to.be.undefined;
+    expect(nagRestSchemaManager.get('user3')).to.be.undefined;
+    expect(nagRestSchemaManager.get('user4')).to.be.undefined;
   });
 
   it('should be able to remove schemas', function() {
     nagRestSchemaManager.add('user', schema);
     nagRestSchemaManager.remove('user');
 
-    expect(nagRestSchemaManager.get('user')).toBeUndefined();
+    expect(nagRestSchemaManager.get('user')).to.be.undefined;
   });
 
   it('should be able to override some data in the store schema when pulling it', function() {
@@ -172,11 +172,11 @@ describe('Rest Schema Manager', function(){
       route: '/users/custom'
     });
 
-    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
+    expect(_.isFunction(retrievedSchema.requestFormatter)).to.be.true;
 
     delete retrievedSchema.requestFormatter;
 
-    expect(retrievedSchema).toEqual(expected);
+    expect(retrievedSchema).to.deep.equal(expected);
   });
 
   it('should be able to override elements of the schema that are objects themsolves without erasing existing data in the stored schema', function() {
@@ -206,11 +206,11 @@ describe('Rest Schema Manager', function(){
       }
     });
 
-    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
+    expect(_.isFunction(retrievedSchema.requestFormatter)).to.be.true;
 
     delete retrievedSchema.requestFormatter;
 
-    expect(retrievedSchema).toEqual(expected);
+    expect(retrievedSchema).to.deep.equal(expected);
   });
 
   it('should be able to override some data in the store schema when pulling it without effecting the stored schema', function() {
@@ -241,11 +241,11 @@ describe('Rest Schema Manager', function(){
 
     var retrievedSchema = nagRestSchemaManager.get('user');
 
-    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
+    expect(_.isFunction(retrievedSchema.requestFormatter)).to.be.true;
 
     delete retrievedSchema.requestFormatter;
 
-    expect(retrievedSchema).toEqual(expected);
+    expect(retrievedSchema).to.deep.equal(expected);
   });
 
   it('should be able to override deep objects', function() {
@@ -276,11 +276,11 @@ describe('Rest Schema Manager', function(){
       inherit: null
     };
 
-    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
+    expect(_.isFunction(retrievedSchema.requestFormatter)).to.be.true;
 
     delete retrievedSchema.requestFormatter;
 
-    expect(retrievedSchema).toEqual(expected);
+    expect(retrievedSchema).to.deep.equal(expected);
   });
 
   it('should not modified the stored schema when a pulled schema is modified', function() {
@@ -307,11 +307,11 @@ describe('Rest Schema Manager', function(){
     modifiedSchema.route = '/should/not/reflect/in/stored/schema';
     var retrievedSchema = nagRestSchemaManager.get('user');
 
-    expect(_.isFunction(retrievedSchema.requestFormatter)).toBe(true);
+    expect(_.isFunction(retrievedSchema.requestFormatter)).to.be.true;
 
     delete retrievedSchema.requestFormatter;
 
-    expect(retrievedSchema).toEqual(expected);
+    expect(retrievedSchema).to.deep.equal(expected);
   });
 
   describe("Data Normalization", function() {
@@ -320,7 +320,7 @@ describe('Rest Schema Manager', function(){
         IdenTiFIer: 1,
         firstname: 'John',
         LAST_NAME: 'Doe'
-      })).toEqual({
+      })).to.deep.equal({
         id: 1,
         firstName: 'John',
         lastName: 'Doe'
@@ -332,7 +332,7 @@ describe('Rest Schema Manager', function(){
         id: 1,
         firstName: 'John',
         lastName: 'Doe'
-      })).toEqual({
+      })).to.deep.equal({
         id: 1,
         firstName: 'John',
         lastName: 'Doe'
@@ -344,7 +344,7 @@ describe('Rest Schema Manager', function(){
         id: 1,
         firstName: 'John',
         lastName: 'Doe'
-      }, 'outgoing')).toEqual({
+      }, 'outgoing')).to.deep.equal({
         IdenTiFIer: 1,
         firstname: 'John',
         LAST_NAME: 'Doe'

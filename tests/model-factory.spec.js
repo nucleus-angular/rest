@@ -100,13 +100,13 @@ describe('Rest Model Factory', function(){
   it('should be able to create an empty instance of a model', function() {
     var model = nagRestModelFactory.create('user');
 
-    expect(_.isObject(model.mngr)).toBe(true);
-    expect(model.id).toBeNull();
-    expect(model.firstName).toBeNull();
-    expect(model.lastName).toBeNull();
-    expect(model.username).toBeNull();
-    expect(model.managerId).toBeNull();
-    expect(model.mngr.state).toBe('new');
+    expect(_.isObject(model.mngr)).to.be.true
+    expect(model.id).to.be.null;
+    expect(model.firstName).to.be.null;
+    expect(model.lastName).to.be.null;
+    expect(model.username).to.be.null;
+    expect(model.managerId).to.be.null;
+    expect(model.mngr.state).to.equal('new');
   });
 
   it('should be able to specific the initial data when creating a new model', function() {
@@ -116,9 +116,9 @@ describe('Rest Model Factory', function(){
       username: 'john.doe'
     });
 
-    expect(model.firstName).toBe('John');
-    expect(model.lastName).toBe('Doe');
-    expect(model.username).toBe('john.doe');
+    expect(model.firstName).to.equal('John');
+    expect(model.lastName).to.equal('Doe');
+    expect(model.username).to.equal('john.doe');
   });
 
   it('should ignore any data that is part of the initial data object that is not configured as a properties int he schema', function() {
@@ -129,7 +129,7 @@ describe('Rest Model Factory', function(){
       test: 'test'
     });
 
-    expect(model.test).toBeUndefined();
+    expect(model.test).to.be.undefined;
   });
 
   it('should be able to override the default schema settings', function() {
@@ -143,8 +143,8 @@ describe('Rest Model Factory', function(){
       }
     });
 
-    expect(model.mngr.schema.route).toBe('/session');
-    expect(model.mngr.schema.properties).toEqual({
+    expect(model.mngr.schema.route).to.equal('/session');
+    expect(model.mngr.schema.properties).to.deep.equal({
       id: {
         sync: false
       },
@@ -168,8 +168,8 @@ describe('Rest Model Factory', function(){
     model.firstName = 'Bob';
     model.lastName = 'Smith';
 
-    expect(model.firstName).toBe('Bob');
-    expect(model.lastName).toBe('Smith');
+    expect(model.firstName).to.equal('Bob');
+    expect(model.lastName).to.equal('Smith');
   });
 
   it('should not be able to redefine the schema once the model has been created', function() {
@@ -177,7 +177,7 @@ describe('Rest Model Factory', function(){
 
     model.mngr.schema = {};
 
-    expect(model.mngr.schema).toEqual({
+    expect(model.mngr.schema).to.deep.equal({
       route: '/users',
       idProperty: 'id',
       properties: {
@@ -221,8 +221,8 @@ describe('Rest Model Factory', function(){
 
     model.mngr.reset();
 
-    expect(model.firstName).toBe('John');
-    expect(model.lastName).toBe('Doe');
+    expect(model.firstName).to.equal('John');
+    expect(model.lastName).to.equal('Doe');
   });
 
   /*******************************************************************************************************************/
@@ -236,7 +236,7 @@ describe('Rest Model Factory', function(){
       username: 'john.doe'
     });
 
-    expect(model.mngr.isRemote()).toBe(false);
+    expect(model.mngr.isRemote()).to.be.false;
   });
 
   it("should evaluate is remote as true for model in a state of 'loaded'", function() {
@@ -247,7 +247,7 @@ describe('Rest Model Factory', function(){
       username: 'john.doe'
     }, true);
 
-    expect(model.mngr.isRemote()).toBe(true);
+    expect(model.mngr.isRemote()).to.be.true;
   });
 
   it("should evaluate is remote as true for model in a state of 'dirty'", function() {
@@ -260,7 +260,7 @@ describe('Rest Model Factory', function(){
 
     model.firstName = 'John2';
 
-    expect(model.mngr.isRemote()).toBe(true);
+    expect(model.mngr.isRemote()).to.be.true;
   });
 
   it("should evaluate is remote as false for model in a state of 'deleted'", function() {
@@ -282,7 +282,7 @@ describe('Rest Model Factory', function(){
     model.mngr.destroy();
     $httpBackend.flush();
 
-    expect(model.mngr.isRemote()).toBe(false);
+    expect(model.mngr.isRemote()).to.be.false;
   });
 
   /*******************************************************************************************************************/
@@ -300,7 +300,7 @@ describe('Rest Model Factory', function(){
     model.firstName = 'John2';
     model.lastName = 'Doe2';
 
-    expect(model.mngr.dirtyProperties).toEqual([
+    expect(model.mngr.dirtyProperties).to.deep.equal([
       'firstName',
       'lastName'
     ]);
@@ -336,7 +336,7 @@ describe('Rest Model Factory', function(){
     model.mngr.sync();
     $httpBackend.flush();
 
-    expect(model.mngr.dirtyProperties).toEqual([]);
+    expect(model.mngr.dirtyProperties).to.be.empty;
   });
 
   /*******************************************************************************************************************/
@@ -350,7 +350,7 @@ describe('Rest Model Factory', function(){
       lastName: 'Doe'
     });
 
-    expect(model.mngr.toJson()).toEqual({
+    expect(model.mngr.toJson()).to.deep.equal({
       id: null,
       firstName: 'John',
       lastName: 'Doe',
@@ -367,7 +367,7 @@ describe('Rest Model Factory', function(){
       lastName: 'Doe'
     }, true);
 
-    expect(model.mngr.state).toBe('loaded')
+    expect(model.mngr.state).to.equal('loaded')
   });
 
   /*******************************************************************************************************************/
@@ -381,7 +381,7 @@ describe('Rest Model Factory', function(){
       username: 'john.doe'
     });
 
-    expect(model.mngr.state).toBe('new');
+    expect(model.mngr.state).to.equal('new');
   });
 
   it('should be able to crete a model which is already in a loaded state', function() {
@@ -392,7 +392,7 @@ describe('Rest Model Factory', function(){
       username: 'john.doe'
     }, true);
 
-    expect(model.mngr.state).toBe('loaded');
+    expect(model.mngr.state).to.equal('loaded');
   });
 
   it('should not set the state to loaded even if the remote flag is set to true if the id property is not present in initial data', function() {
@@ -402,7 +402,7 @@ describe('Rest Model Factory', function(){
       username: 'john.doe'
     }, true);
 
-    expect(model.mngr.state).toBe('new');
+    expect(model.mngr.state).to.equal('new');
   });
 
   it("should set the state to dirty when the a changing a loaded model's property", function() {
@@ -415,7 +415,7 @@ describe('Rest Model Factory', function(){
 
     model.firstName = 'John2';
 
-    expect(model.mngr.state).toBe('dirty');
+    expect(model.mngr.state).to.equal('dirty');
   });
 
   it("should set the state to deleted when deleting a loaded model", function() {
@@ -437,7 +437,7 @@ describe('Rest Model Factory', function(){
     model.mngr.destroy();
     $httpBackend.flush();
 
-    expect(model.mngr.state).toBe('deleted');
+    expect(model.mngr.state).to.equal('deleted');
   });
 
   it("should set the state to deleted when deleting a dirty model", function() {
@@ -461,7 +461,7 @@ describe('Rest Model Factory', function(){
     model.mngr.destroy();
     $httpBackend.flush();
 
-    expect(model.mngr.state).toBe('deleted');
+    expect(model.mngr.state).to.equal('deleted');
   });
 
   it("should not set the state to deleted when deleting a new model", function() {
@@ -473,7 +473,7 @@ describe('Rest Model Factory', function(){
 
     model.mngr.destroy();
 
-    expect(model.mngr.state).toBe('new');
+    expect(model.mngr.state).to.equal('new');
   });
 
   it("should set the model's state to loaded when syncing a dirty model", function() {
@@ -505,7 +505,7 @@ describe('Rest Model Factory', function(){
     model.mngr.sync('PATCH');
     $httpBackend.flush();
 
-    expect(model.mngr.state).toBe('loaded');
+    expect(model.mngr.state).to.equal('loaded');
   });
 
   /*******************************************************************************************************************/
@@ -518,7 +518,7 @@ describe('Rest Model Factory', function(){
     model.firstName = 'Bob';
     model.lastName = 'Smith';
 
-    expect(model.mngr.toJson()).toEqual({
+    expect(model.mngr.toJson()).to.deep.equal({
       id: null,
       firstName: 'Bob',
       lastName: 'Smith',
@@ -535,7 +535,7 @@ describe('Rest Model Factory', function(){
     model.noneSchemaProperty = 'test';
     var modelJson = model.mngr.toJson();
 
-    expect(modelJson.noneSchemaProperty).toBeUndefined();
+    expect(modelJson.noneSchemaProperty).to.be.undefined;
   });
 
   /*******************************************************************************************************************/
@@ -545,7 +545,7 @@ describe('Rest Model Factory', function(){
   it("should evaluate the route or the model without the id property in the url if the the model's state is new", function() {
     var model = nagRestModelFactory.create('user');
 
-    expect(model.mngr.route).toBe('/users');
+    expect(model.mngr.route).to.equal('/users');
   });
 
   it("should evaluate the route or the model without the id property in the url if the the model's state is deleted", function() {
@@ -567,7 +567,7 @@ describe('Rest Model Factory', function(){
     model.mngr.destroy();
     $httpBackend.flush();
 
-    expect(model.mngr.route).toBe('/users');
+    expect(model.mngr.route).to.equal('/users');
   });
 
   it("should evaluate the route or the model with the id property in the url if the the model's state is loaded", function() {
@@ -578,7 +578,7 @@ describe('Rest Model Factory', function(){
       username: 'john.doe'
     }, true);
 
-    expect(model.mngr.route).toBe('/users/1');
+    expect(model.mngr.route).to.equal('/users/1');
   });
 
   it("should evaluate the route or the model with the id property in the url if the the model's state is dirty", function() {
@@ -589,21 +589,21 @@ describe('Rest Model Factory', function(){
       username: 'john.doe'
     }, true);
 
-    expect(model.mngr.route).toBe('/users/1');
+    expect(model.mngr.route).to.equal('/users/1');
   });
 
   it("should not include the base url in the route property", function() {
     nagRestConfig.setBaseUrl('/api');
     var model = nagRestModelFactory.create('user');
 
-    expect(model.mngr.route).toBe('/users');
+    expect(model.mngr.route).to.equal('/users');
   });
 
   it("should include the base url in the full route property", function() {
     nagRestConfig.setBaseUrl('/api');
     var model = nagRestModelFactory.create('user');
 
-    expect(model.mngr.fullRoute).toBe('/api/users');
+    expect(model.mngr.fullRoute).to.equal('/api/users');
   });
 
   it("should have a nested route for model that are generated from getRelation()", function() {
@@ -630,7 +630,7 @@ describe('Rest Model Factory', function(){
     var project = user.mngr.getRelation('project', 1);
     $httpBackend.flush();
 
-    expect(project.mngr.route).toBe('/users/1/projects/1');
+    expect(project.mngr.route).to.equal('/users/1/projects/1');
   })
 
   it("should not have a nested route for model that are generated from getRelation() is flatten is configured to true for the relation", function() {
@@ -663,7 +663,7 @@ describe('Rest Model Factory', function(){
     var project = user.mngr.getRelation('project', 1);
     $httpBackend.flush();
 
-    expect(project.mngr.route).toBe('/projects/1');
+    expect(project.mngr.route).to.equal('/projects/1');
   });
 
   /*******************************************************************************************************************/
@@ -865,7 +865,7 @@ describe('Rest Model Factory', function(){
     model.mngr.sync('PATCH');
     $httpBackend.flush();
 
-    expect(model.managerId).toBeNull();
+    expect(model.managerId).to.be.null;
   });
 
   it("should update the model's data with the data returned from the syncing process", function() {
@@ -894,7 +894,7 @@ describe('Rest Model Factory', function(){
     model.mngr.sync('POST');
     $httpBackend.flush();
 
-    expect(model.id).toBe(1);
+    expect(model.id).to.equal(1);
   });
 
   it("should be able to stop the automatic local data sync with syncing the data remotely", function() {
@@ -923,7 +923,7 @@ describe('Rest Model Factory', function(){
     model.mngr.sync('POST', false);
     $httpBackend.flush();
 
-    expect(model.id).toBeNull();
+    expect(model.id).to.be.null;
   });
 
   it("should be able to delete models", function() {
@@ -965,7 +965,7 @@ describe('Rest Model Factory', function(){
     model.mngr.destroy();
     $httpBackend.flush();
 
-    expect(model.id).toBeNull();
+    expect(model.id).to.be.null;
   });
 
   /*******************************************************************************************************************/
@@ -999,12 +999,12 @@ describe('Rest Model Factory', function(){
     var projects = user.mngr.getRelation('project');
     $httpBackend.flush();
 
-    expect(projects.length).toBe(2);
-    expect(projects[0].mngr.toJson()).toEqual({
+    expect(projects.length).to.equal(2);
+    expect(projects[0].mngr.toJson()).to.deep.equal({
       projectId: 1,
       name: 'Project 1'
     });
-    expect(projects[1].mngr.toJson()).toEqual({
+    expect(projects[1].mngr.toJson()).to.deep.equal({
       projectId: 2,
       name: 'Project 2'
     });
@@ -1034,8 +1034,8 @@ describe('Rest Model Factory', function(){
     var project = user.mngr.getRelation('project', 2);
     $httpBackend.flush();
 
-    expect(_.isObject(project.mngr)).toBe(true);
-    expect(project.mngr.toJson()).toEqual({
+    expect(_.isObject(project.mngr)).to.be.true;
+    expect(project.mngr.toJson()).to.deep.equal({
       projectId: 2,
       name: 'Project 2'
     });
@@ -1076,11 +1076,7 @@ describe('Rest Model Factory', function(){
     var team = user.mngr.getRelation('team');
     $httpBackend.flush();
 
-    expect(_.isObject(team.mngr)).toBe(true);
-    expect(team.mngr.toJson()).toEqual({
-      id: 1,
-      name: 'Team 1'
-    });
+    expect(_.isObject(team.mngr)).to.be.true;
   });
 
   /*******************************************************************************************************************/
@@ -1117,11 +1113,7 @@ describe('Rest Model Factory', function(){
     var project = user.mngr.getRelation('project');
     $httpBackend.flush();
 
-    expect(_.isObject(project[0].mngr)).toBe(true);
-    expect(project[0].mngr.toJson()).toEqual({
-      projectId: 1,
-      name: 'Project 1'
-    });
+    expect(_.isObject(project[0].mngr)).to.be.true;
   });
 
   /*******************************************************************************************************************/
@@ -1150,22 +1142,22 @@ describe('Rest Model Factory', function(){
     });
 
     it("should be able to bing to form element directly with ng-model", function() {
-      expect(element.find('#first-name').val()).toBe('John');
-      expect(element.find('#last-name').val()).toBe('Doe');
-      expect(element.find('#username').val()).toBe('john.doe');
+      expect(element.find('#first-name').val()).to.equal('John');
+      expect(element.find('#last-name').val()).to.equal('Doe');
+      expect(element.find('#username').val()).to.equal('john.doe');
     });
 
     it("should have the model's data be updated when a binding form element is updated", function() {
       element.find('#first-name').controller('ngModel').$setViewValue('John2');
 
-      expect($scope.user.firstName).toBe('John2');
+      expect($scope.user.firstName).to.equal('John2');
     });
 
     it("should have the form's data be updated when a binding form element's scope value is updated", function() {
       $scope.user.lastName = 'Doe2';
       $scope.$digest();
 
-      expect(element.find('#last-name').val()).toBe('Doe2');
+      expect(element.find('#last-name').val()).to.equal('Doe2');
     });
   });
 
@@ -1230,7 +1222,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 'Test';
 
-      expect(user.firstName).toBe('#Test!');
+      expect(user.firstName).to.equal('#Test!');
     });
 
     it("should be able to set custom setter function for properties", function() {
@@ -1246,7 +1238,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 'Test';
 
-      expect(user.firstName).toBe('!Test#');
+      expect(user.firstName).to.equal('!Test#');
     });
   });
 
@@ -1254,7 +1246,7 @@ describe('Rest Model Factory', function(){
     it("should return true when attempting to validate a property that has no validation", function() {
       var user = nagRestModelFactory.create('user');
 
-      expect(user.mngr.validate('firstName')).toBe(true);
+      expect(user.mngr.validate('firstName')).to.be.true;
     });
 
     it("should be able to validate based on a stored validation rule 'required' to false", function() {
@@ -1268,7 +1260,7 @@ describe('Rest Model Factory', function(){
         }
       });
 
-      expect(user.mngr.validate('firstName')).toEqual({
+      expect(user.mngr.validate('firstName')).to.deep.equal({
         required: "is required"
       });
     });
@@ -1286,7 +1278,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 'John';
 
-      expect(user.mngr.validate('firstName')).toEqual(true);
+      expect(user.mngr.validate('firstName')).to.be.true;
     });
 
     it("should be able to validate based on a stored validation rule 'email' to false", function() {
@@ -1300,7 +1292,7 @@ describe('Rest Model Factory', function(){
         }
       });
 
-      expect(user.mngr.validate('firstName')).toEqual({
+      expect(user.mngr.validate('firstName')).to.deep.equal({
         email: "must be an email"
       });
     });
@@ -1318,7 +1310,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 'test@example.com';
 
-      expect(user.mngr.validate('firstName')).toEqual(true);
+      expect(user.mngr.validate('firstName')).to.be.true;
     });
 
     it("should be able to validate based on a stored validation rule 'min' to false", function() {
@@ -1336,7 +1328,7 @@ describe('Rest Model Factory', function(){
         }
       });
 
-      expect(user.mngr.validate('firstName')).toEqual({
+      expect(user.mngr.validate('firstName')).to.deep.equal({
         minValue: "must be 10 or higher"
       });
     });
@@ -1358,7 +1350,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 20;
 
-      expect(user.mngr.validate('firstName')).toEqual(true);
+      expect(user.mngr.validate('firstName')).to.be.true;
     });
 
     it("should be able to validate based on a stored validation rule 'max' to false", function() {
@@ -1376,7 +1368,7 @@ describe('Rest Model Factory', function(){
         }
       });
 
-      expect(user.mngr.validate('firstName')).toEqual({
+      expect(user.mngr.validate('firstName')).to.deep.equal({
         maxValue: "must be 10 or lower"
       });
     });
@@ -1398,7 +1390,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 1;
 
-      expect(user.mngr.validate('firstName')).toEqual(true);
+      expect(user.mngr.validate('firstName')).to.be.true;
     });
 
     it("should be able to validate based on a stored validation rule 'range' to false", function() {
@@ -1417,7 +1409,7 @@ describe('Rest Model Factory', function(){
         }
       });
 
-      expect(user.mngr.validate('firstName')).toEqual({
+      expect(user.mngr.validate('firstName')).to.deep.equal({
         rangeValue: "must be between 10 and 20"
       });
     });
@@ -1440,7 +1432,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 15;
 
-      expect(user.mngr.validate('firstName')).toEqual(true);
+      expect(user.mngr.validate('firstName')).to.be.true;
     });
 
     it("should be able to validate based on a custom validation rule to false", function() {
@@ -1461,7 +1453,7 @@ describe('Rest Model Factory', function(){
         }
       });
 
-      expect(user.mngr.validate('firstName')).toEqual({
+      expect(user.mngr.validate('firstName')).to.deep.equal({
         ruleName: 'must be "John"'
       });
     });
@@ -1486,7 +1478,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 'John';
 
-      expect(user.mngr.validate('firstName')).toEqual(true);
+      expect(user.mngr.validate('firstName')).to.be.true;
     });
 
     it("should be able to validate based on an array of validators that can allow both stored and custom validation rules to false for both", function() {
@@ -1508,7 +1500,7 @@ describe('Rest Model Factory', function(){
         }
       });
 
-      expect(user.mngr.validate('firstName')).toEqual({
+      expect(user.mngr.validate('firstName')).to.deep.equal({
         required: "is required",
         ruleName: 'must be "John"'
       });
@@ -1535,7 +1527,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 'Joh';
 
-      expect(user.mngr.validate('firstName')).toEqual({
+      expect(user.mngr.validate('firstName')).to.deep.equal({
         ruleName: 'must be "John"'
       });
     });
@@ -1561,7 +1553,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 'John';
 
-      expect(user.mngr.validate('firstName')).toEqual(true);
+      expect(user.mngr.validate('firstName')).to.be.true;
     });
 
     it("should be able to validate all field to false", function() {
@@ -1587,7 +1579,7 @@ describe('Rest Model Factory', function(){
         }
       });
 
-      expect(user.mngr.validate()).toEqual({
+      expect(user.mngr.validate()).to.deep.equal({
         firstName: {
           required: "is required"
         },
@@ -1622,7 +1614,7 @@ describe('Rest Model Factory', function(){
 
       user.firstName = 'John';
 
-      expect(user.mngr.validate()).toEqual({
+      expect(user.mngr.validate()).to.deep.equal({
         lastName: {
           ruleName: 'must be "John"'
         }
@@ -1655,7 +1647,7 @@ describe('Rest Model Factory', function(){
       user.firstName = 'John';
       user.lastName = 'John';
 
-      expect(user.mngr.validate()).toEqual(true);
+      expect(user.mngr.validate()).to.be.true;
     });
 
     it("should validate the model automatic when syncing is configured too", function() {
@@ -1680,7 +1672,7 @@ describe('Rest Model Factory', function(){
 
       model.firstName = 'John2';
 
-      expect(model.mngr.sync()).toEqual({
+      expect(model.mngr.sync()).to.deep.equal({
         lastName: {
           required: 'is required'
         }
@@ -1745,8 +1737,8 @@ describe('Rest Model Factory', function(){
         }
       });
 
-      expect(_.isFunction(model.shouldHaveMethod)).toBe(true);
-      expect(model.shouldHaveMethod()).toEqual('should have method');
+      expect(_.isFunction(model.shouldHaveMethod)).to.be.true;
+      expect(model.shouldHaveMethod()).to.equal('should have method');
     });
 
     it('should be able to access regular model properties', function() {
@@ -1765,8 +1757,8 @@ describe('Rest Model Factory', function(){
         }
       });
 
-      expect(model.getId()).toEqual(1);
-      expect(model.getModelRoute()).toEqual('/users/1');
+      expect(model.getId()).to.equal(1);
+      expect(model.getModelRoute()).to.equal('/users/1');
     });
 
     it('should be able to define a inherited properties that have private date that will be used to extend the functionality of the generate model', function() {
@@ -1788,7 +1780,7 @@ describe('Rest Model Factory', function(){
         inherit: inheritedProperties
       });
 
-      expect(model.getPrivateData()).toEqual('this data is private');
+      expect(model.getPrivateData()).to.equal('this data is private');
     });
   });
 
@@ -1807,7 +1799,7 @@ describe('Rest Model Factory', function(){
       }
     });
 
-    expect(model.mngr.toJson()).toEqual({
+    expect(model.mngr.toJson()).to.deep.equal({
       id: 1,
       firstName: 'John',
       lastName: null,
@@ -1832,7 +1824,7 @@ describe('Rest Model Factory', function(){
       username: 'john.doe'
     });
 
-    expect(model.mngr.toJson()).toEqual({
+    expect(model.mngr.toJson()).to.deep.equal({
       id: 1,
       firstName: 'John',
       lastName: null,
