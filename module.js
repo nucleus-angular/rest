@@ -36,8 +36,8 @@
  * ```html
  * <script type="text/javascript" src="/components/string-json-parser/string-json-parser.js"></script>
  * <script type="text/javascript" src="/components/nucleus-angular-rest/module.js"></script>
- * <script type="text/javascript" src="/components/nucleus-angular-rest/config.js"></script>
- * <script type="text/javascript" src="/components/nucleus-angular-rest/schema-manager.js"></script>
+ * <script type="text/javascript" src="/components/nucleus-angular-rest/config-provider.js"></script>
+ * <script type="text/javascript" src="/components/nucleus-angular-rest/schema-manager-factroy.js"></script>
  * <script type="text/javascript" src="/components/nucleus-angular-rest/model-factory.js"></script>
  * <script type="text/javascript" src="/components/nucleus-angular-rest/repository-factory.js"></script>
  * ```
