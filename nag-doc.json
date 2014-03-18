@@ -7,8 +7,8 @@
     "jsonDir": "json",
     "webDir": "web",
     "docApp": {
-      "url": "https://github.com/ryanzec/angular-doc-app/archive/master.zip",
-      "zipPath": "/angular-doc-app-master"
+      "url": "https://github.com/nucleus-angular/nag-doc-app/archive/master.zip",
+      "zipPath": "/nag-doc-app-master"
     },
     "paths": [
       "."

@@ -1,15 +1,4 @@
-/**
- * Model factory for the rest system
- *
- * @todo: update to have all the latest built in data validations
- *
- * @module nag.rest.model
- */
-angular.module('nag.rest.model', [
-  'nag.rest.config',
-  'nag.rest.schemaManager',
-  'nag.rest.repository'
-])
+angular.module('nag.rest')
 .factory('nagRestModelFactory', [
   '$injector',
   '$q',
@@ -105,6 +94,7 @@ angular.module('nag.rest.model', [
      * user.lastName;
      * ```
      *
+     * @module nag.rest
      * @class BaseModel
      * @constructor
      *

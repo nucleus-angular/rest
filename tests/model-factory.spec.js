@@ -71,7 +71,7 @@ describe('Rest Model Factory', function(){
     dataItemLocation: 'response.data.team'
   }
 
-  beforeEach(module('nag.rest.model'));
+  beforeEach(module('nag.rest'));
   beforeEach(module('unitTestMocker'));
 
   beforeEach(inject(function(_$injector_) {

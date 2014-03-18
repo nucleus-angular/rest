@@ -1,8 +1,4 @@
-angular.module('nag.rest.repository', [
-  'nag.rest.config',
-  'nag.rest.schemaManager',
-  'nag.rest.model'
-])
+angular.module('nag.rest')
 .factory('nagRestRepositoryFactory', [
   '$http',
   '$q',
@@ -394,7 +390,7 @@ angular.module('nag.rest.repository', [
      *
      * The rest of the code examples might use either of the options for getting the data depending on the situation.
      *
-     * @module nag.rest.repository
+     * @module nag.rest
      * @ngservice nagRestRepositoryFactory
      */
     return {

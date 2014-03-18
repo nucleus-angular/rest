@@ -34,7 +34,7 @@ describe('Rest Schema Manager', function(){
     }
   };
 
-  beforeEach(module('nag.rest.schemaManager'));
+  beforeEach(module('nag.rest'));
   beforeEach(module('unitTestMocker'));
 
   beforeEach(inject(function($injector) {

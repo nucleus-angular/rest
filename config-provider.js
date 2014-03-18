@@ -37,10 +37,10 @@
  * });
  * ```
  *
- * @module nag.rest.config
+ * @module nag.rest
  * @ngservice nagRestConfig
  */
-angular.module('nag.rest.config', [])
+angular.module('nag.rest')
 .provider('nagRestConfig', function() {
   var strictMode = false;
   var baseUrl = '';

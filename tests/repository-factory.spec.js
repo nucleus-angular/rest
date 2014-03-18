@@ -56,7 +56,7 @@ describe('Rest Base Repository', function(){
     dataItemLocation: 'response.data.team'
   };
 
-  beforeEach(module('nag.rest.repository'));
+  beforeEach(module('nag.rest'));
   beforeEach(module('unitTestMocker'));
 
   beforeEach(inject(function($injector) {

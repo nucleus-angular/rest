@@ -32,12 +32,10 @@
  * - **flattenItemRoute**: (default: nagRestConfig.getFlattenItemRoute())
  * - if set to true, mngr.route/mngr.fullRoute will remove all but the last resource path. (```/users/123/projects/234/teams/345``` would be converted to ```/teams/345```).  This only applies to when there is a trailing id, if the trailing element in the url is a resource name, nothing will get removed (```/users/123/projects/234/teams``` would remain the same)
  *
- * @module nag.rest.schemaManager
+ * @module nag.rest
  * @ngservice nagRestSchemaManager
  */
-angular.module('nag.rest.schemaManager', [
-  'nag.rest.config'
-])
+angular.module('nag.rest')
 .factory('nagRestSchemaManager', [
   'nagRestConfig',
   function(nagRestConfig) {

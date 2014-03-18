@@ -103,8 +103,4 @@
  *
  * @module nag.rest
  */
-angular.module('nag.rest', [
-  'nag.rest.config',
-  'nag.rest.model',
-  'nag.rest.repository'
-]);
+angular.module('nag.rest', []);

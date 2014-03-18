@@ -14,7 +14,11 @@ module.exports = function(config) {
       'components/data-validation/data-validation.js',
       'components/angular-mocks/angular-mocks.js',
       'tests/libraries/mocker.js',
-      '*.js',
+      'module.js',
+      'config-provider.js',
+      'schema-manager-factory.js',
+      'model-factory.js',
+      'repository-factory.js',
       'tests/*.js'
     ]
   });

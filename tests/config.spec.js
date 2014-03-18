@@ -3,7 +3,7 @@ describe('Rest Config', function(){
 
   beforeEach(module('unitTestMocker'));
 
-  beforeEach(module('nag.rest.config', function(nagRestConfigProvider) {
+  beforeEach(module('nag.rest', function(nagRestConfigProvider) {
     provider = nagRestConfigProvider;
   }));
 
