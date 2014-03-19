@@ -2,7 +2,14 @@
 
 ## master
 
-- N/A
+- coding standards update and other general code cleanup
+- fixed issue where extending model data was not calling custom setter functions for the model properties (#42)
+- added installation section to README (#35)
+- fixed issue that would have the url include a trailing ? when there are no query string variables
+- refactored parameters for repository's find() method
+- added support for passing query string data (#41)
+- added quick start guide to README
+- update to used external data validation library
 
 ## 0.3.6
 - added support for defining inherited methods in schema definitions (#28)
