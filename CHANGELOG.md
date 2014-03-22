@@ -1,6 +1,6 @@
 # Change Log
 
-## master
+## 0.5.0
 
 - coding standards update and other general code cleanup
 - fixed issue where extending model data was not calling custom setter functions for the model properties (#42)

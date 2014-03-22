@@ -1,7 +1,7 @@
 {
   "name": "nucleus-angular-rest",
   "private": true,
-  "version": "0.3.6",
+  "version": "0.5.0",
   "dependencies": {},
   "devDependencies": {
     "karma-mocha": "0.1.1",
