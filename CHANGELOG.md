@@ -1,5 +1,9 @@
 # Change Log
 
+## master
+
+- added main property to bower.josn file (#44)
+
 ## 0.5.0
 
 - coding standards update and other general code cleanup
