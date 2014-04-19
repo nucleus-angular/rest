@@ -1,6 +1,13 @@
 {
   "name": "nucleus-angular-rest",
   "version": "0.5.0",
+  "main": [
+    "module.js",
+    "config-provider.js",
+    "schema-manager-factory.js",
+    "repository-factory.js",
+    "model-factory,js"
+  ],
   "dependencies": {
     "javascript-utilities": "master",
     "data-validation": "master"
