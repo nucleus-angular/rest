@@ -124,7 +124,7 @@ angular.module('nag.rest')
 
           //redefine to make sure we are using the correct property names
           objectKeys = Object.keys(newData);
-          
+
           _.forEach(objectKeys, function(value) {
             self[value] = newData[value];
           });
@@ -429,7 +429,7 @@ angular.module('nag.rest')
          * //now if the mngr.isRemote() results in true (which just means the mngr.state is either 'loaded' or
          * //'dirty'), it will include the idProperty of the model in the route
          *
-         * var remoteUser - userRepository.mngr.find(1);
+         * var remoteUser - userRepository.mngr.find(1).models;
          *
          * // returns:
          * // '/users/1'
@@ -447,7 +447,7 @@ angular.module('nag.rest')
          * // '/projects/1/users'
          * nestedUser.mngr.route;
          *
-         * var nestedRemoteUser = nestedUserRepository.mngr.find(1);
+         * var nestedRemoteUser = nestedUserRepository.mngr.find(1).models;
          *
          * // returns:
          * // '/users/1';
@@ -490,7 +490,7 @@ angular.module('nag.rest')
          *   route: '/projects/1/users'
          *   flattenItemRoute: true
          * });
-         * var nestedRemoteUser = nestedUserRepository.mngr.find(1);
+         * var nestedRemoteUser = nestedUserRepository.mngr.find(1).models;
          *
          * //fullRoute will just prepend the base url to the route.  lets assume the base url is
          * //http://api.example.com
@@ -689,7 +689,7 @@ angular.module('nag.rest')
          *
          * @example:javascript
          * var userRepository = nagRestRepositoryFactory.create('user');
-         * var user = userRepository.mngr.find(789);
+         * var user = userRepository.mngr.find(789).models;
          *
          * //to delete the user we can just call the mngr.destroy() method.  you should note the calling
          * //mngr.destroy() only sends the delete call to the rest api, the model itself still has the data
@@ -725,7 +725,7 @@ angular.module('nag.rest')
          *
          * @example:javascript
          * var userRepository = nagRestRepositoryFactory.create('user');
-         * var user = userRepository.mngr.find(123);
+         * var user = userRepository.mngr.find(123).models;
          *
          * //we can pull any relation thats configured in the relations part of the schema with the
          * //mngr.getRelation() method.  the first parameter this method takes is the name of the relation
@@ -739,7 +739,7 @@ angular.module('nag.rest')
          * //you can also pass in a second parameter that is the relation id value
          *
          * // GET /users/123/projects/234
-         * var project = user.mngr.getRelation('project', 234);
+         * var project = user.mngr.getRelation('project', 234).models;
          */
         getRelation: {
           value: function(relationName, relationId) {

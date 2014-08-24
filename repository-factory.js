@@ -179,14 +179,14 @@ angular.module('nag.rest')
          * // GET /users?firstName=John
          * var users = userRepository.mngr.find({
          *   firstName: 'John'
-         * });
+         * }).models;
          *
          * //you can also pass a number/string as the first argument and it will assume that is the value of the
          * //idProperty for the data the repository represents.  in this case the result is initially a new empty
          * //model and the data gets filled in once the data is received and processed
          *
          * // GET /users/123
-         * var user = userRepository.mngr.find(123);
+         * var user = userRepository.mngr.find(123).models;
          *
          * //The second parameter allows you to override the htto configuration values.  For example, if you wanted to send custom headers
          * //you could do this:
@@ -194,7 +194,7 @@ angular.module('nag.rest')
          * // GET /users with request header x-user:test
          * var users = userRepository.mngr.find({}, {
          *   'x-user': 'test'
-         * });
+         * }).models;
          *
          * //now some rest apis offer the ability to do very complex queries however because of the complexity,
          * //they require you to pass the data in as a post request instead of get and that is what the third
@@ -220,13 +220,13 @@ angular.module('nag.rest')
          *       value: '%@gmail.com'
          *     }]
          *   }
-         * });
+         * }).models;
          *
          * //The third parameter allows you to pass in any data you wish to be sent in the url as a query string variable
          * // GET /users/1?foo=bar
          * userRepository.mngr.find(1, {}, {
          *   foo: 'bar'
-         * });
+         * }).models;
          */
         find: {
           value: function(searchData, overrideHttpConfig, params) {
@@ -276,9 +276,10 @@ angular.module('nag.rest')
 
             isArray = getIsArray(isArray);
 
-            var value = (isArray === true ? [] : self.mngr.create({}, false, schema));
+            var models = (isArray === true ? [] : self.mngr.create({}, false, schema));
             var deferred = $q.defer();
-            value.then = deferred.promise.then;
+            value = deferred.promise;
+            value.models = models
 
             if(httpConfig.method === 'JSONP') {
               httpConfig.url += '?callback=JSON_CALLBACK';
@@ -289,7 +290,6 @@ angular.module('nag.rest')
               var data = {
                 rawResponse: response
               }
-              var internalThen = value.then;
 
               //this generic parsing should handle most cases for data parse but can be disabled if manually parsing is preferred/needed
               if(schema.autoParse === true) {
@@ -306,7 +306,7 @@ angular.module('nag.rest')
                     data.parsedData.push(newObject);
 
                     //push data for the return value
-                    value.push(newObject);
+                    value.models.push(newObject);
                   }
                 } else if(_(responseData).isObject()) {
                   var newObject = self.mngr.create(responseData, true, schema);
@@ -315,8 +315,7 @@ angular.module('nag.rest')
                   data.parsedData = newObject;
 
                   //set data for the return value
-                  value.mngr.extendData(responseData, true);
-                  value.then = internalThen;
+                  value.models.mngr.extendData(responseData, true);
                 }
               }
 
@@ -346,11 +345,11 @@ angular.module('nag.rest')
      * ```javascript
      * //in this instance an array will be returned and it will have the data populated once the rest api
      * //returns the data and it is processed
-     * var arrayResults = repository.mngr.find();
+     * var arrayResults = repository.mngr.find().models;
      *
      * //in this instance an empty model will be returned and it will have the data populated once the rest
      * //api returns the data and it is processed
-     * var project = user.mngr.getRelation('project', 234);
+     * var project = user.mngr.getRelation('project', 234.models);
      * ```
      *
      * The second way is by way of the promise's then() method, as shown by the following:

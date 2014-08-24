@@ -627,7 +627,7 @@ describe('Rest Model Factory', function(){
         }
       }, {}];
     });
-    var project = user.mngr.getRelation('project', 1);
+    var project = user.mngr.getRelation('project', 1).models;
     $httpBackend.flush();
 
     expect(project.mngr.route).to.equal('/users/1/projects/1');
@@ -660,7 +660,7 @@ describe('Rest Model Factory', function(){
         }
       }, {}];
     });
-    var project = user.mngr.getRelation('project', 1);
+    var project = user.mngr.getRelation('project', 1).models;
     $httpBackend.flush();
 
     expect(project.mngr.route).to.equal('/projects/1');
@@ -794,7 +794,7 @@ describe('Rest Model Factory', function(){
     model.mngr.sync('PATCH');
     $httpBackend.flush();
   });
-  
+
   it("should not send properties that have a value of false or 'update' for sync when syncing with POST http method", function() {
     var model = nagRestModelFactory.create('user', {
       firstName: 'John',
@@ -828,7 +828,7 @@ describe('Rest Model Factory', function(){
     model.mngr.sync('POST');
     $httpBackend.flush();
   });
-  
+
   it("should not send properties that have a value of false or 'create' for sync when syncing with PATCH http method", function() {
     var model = nagRestModelFactory.create('user', {
       id: 1,
@@ -996,7 +996,7 @@ describe('Rest Model Factory', function(){
         }
       }, {}];
     });
-    var projects = user.mngr.getRelation('project');
+    var projects = user.mngr.getRelation('project').models;
     $httpBackend.flush();
 
     expect(projects.length).to.equal(2);
@@ -1031,7 +1031,7 @@ describe('Rest Model Factory', function(){
         }
       }, {}];
     });
-    var project = user.mngr.getRelation('project', 2);
+    var project = user.mngr.getRelation('project', 2).models;
     $httpBackend.flush();
 
     expect(_.isObject(project.mngr)).to.be.true;
@@ -1073,7 +1073,7 @@ describe('Rest Model Factory', function(){
         }
       }, {}];
     });
-    var team = user.mngr.getRelation('team');
+    var team = user.mngr.getRelation('team').models;
     $httpBackend.flush();
 
     expect(_.isObject(team.mngr)).to.be.true;
@@ -1110,7 +1110,7 @@ describe('Rest Model Factory', function(){
         }
       }, {}];
     });
-    var project = user.mngr.getRelation('project');
+    var project = user.mngr.getRelation('project').models;
     $httpBackend.flush();
 
     expect(_.isObject(project[0].mngr)).to.be.true;

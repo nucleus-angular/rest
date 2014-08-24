@@ -2,7 +2,9 @@
 
 ## master
 
-- added main property to bower.josn file (#44)
+- refactored promise code to make it work with changes that were made to angular 1.3.0-beta.18
+- added .editorconfig file
+- added main property to bower.json file (#44)
 
 ## 0.5.0
 

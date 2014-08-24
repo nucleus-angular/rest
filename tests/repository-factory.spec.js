@@ -347,7 +347,7 @@ describe('Rest Base Repository', function(){
     });
     var models = repository.mngr.find({
       firstName: 'John'
-    });
+    }).models;
     $httpBackend.flush();
 
     expect(models.length).to.equal(2);
@@ -438,7 +438,7 @@ describe('Rest Base Repository', function(){
         }
       }, {}];
     });
-    var model = repository.mngr.find(1);
+    var model = repository.mngr.find(1).models;
     $httpBackend.flush();
 
     expect(_.isObject(model.mngr)).to.equal(true);
@@ -484,7 +484,7 @@ describe('Rest Base Repository', function(){
       headers: {
         'X-Custom-Header-UT': 'unit-test'
       }
-    });
+    }).models;
     $httpBackend.flush();
 
     expect(models.length).to.equal(2);
@@ -526,7 +526,7 @@ describe('Rest Base Repository', function(){
           value: 'john.%'
         }]
       }
-    });
+    }).models;
     $httpBackend.flush();
 
     expect(models.length).to.equal(2);
@@ -553,7 +553,7 @@ describe('Rest Base Repository', function(){
     });
     var model = repository.mngr.find(1, {
       method: 'JSONP'
-    });
+    }).models;
     $httpBackend.flush();
 
     expect(_.isObject(model.mngr)).to.be.true;
@@ -585,7 +585,7 @@ describe('Rest Base Repository', function(){
         }
       }, {}];
     });
-    var session = repository.mngr.find();
+    var session = repository.mngr.find().models;
     $httpBackend.flush();
 
     expect(_.isObject(session.mngr)).to.be.true;
@@ -616,7 +616,7 @@ describe('Rest Base Repository', function(){
         }
       }, {}];
     });
-    var models = repository.mngr.forceIsArray(true).find(1);
+    var models = repository.mngr.forceIsArray(true).find(1).models;
     $httpBackend.flush();
 
     expect(models.length).to.equal(2);
@@ -652,7 +652,7 @@ describe('Rest Base Repository', function(){
           value: 'john.%'
         }]
       }
-    });
+    }).models;
     $httpBackend.flush();
 
     expect(_.isObject(model.mngr)).to.be.true;
@@ -684,7 +684,7 @@ describe('Rest Base Repository', function(){
         }
       }, {}];
     });
-    var model = repository.mngr.find(1);
+    var model = repository.mngr.find(1).models;
     $httpBackend.flush();
 
     expect(_.isObject(model.mngr)).to.be.true;
@@ -729,7 +729,7 @@ describe('Rest Base Repository', function(){
           }
         }, {}];
       });
-      var user = repository.mngr.find(1);
+      var user = repository.mngr.find(1).models;
       $httpBackend.flush();
 
       expect(user.mngr.toJson()).to.deep.equal({
@@ -764,7 +764,7 @@ describe('Rest Base Repository', function(){
       });
       var model = repository.mngr.find(1, {}, {
         foo: 'bar'
-      });
+      }).models;
       $httpBackend.flush();
 
       expect(_.isObject(model.mngr)).to.be.true;
@@ -799,7 +799,7 @@ describe('Rest Base Repository', function(){
         firstName: 'John'
       }, {}, {
         foo: 'bar'
-      });
+      }).models;
       $httpBackend.flush();
 
       expect(models.length).to.equal(2);

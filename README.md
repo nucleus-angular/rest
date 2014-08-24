@@ -76,23 +76,23 @@ In order to get started we need to create and object to interact with the REST e
 var userSchmea = {
   //route the the REST end-point
   route: '/users',
-  
+
   //list of properties for the model
   properties: {
     id: {
       //whether or not to send the property to the REST end-point when syncing data
       sync: false,
-      
+
       //if the name of the property returned from the REST end-point does not match the name of the
       //property for the model, you can define it here
       remoteProperty: 'USER_ID',
-      
+
       //if you need to do something every time you need to access the property, you can provide a
       //getter function
       getter: funtion(value) {
         return '#' + value;
       },
-      
+
       //if you need to do something every time you need to set the property, you can provide a
       //setter function
       seter: function(value) {
@@ -104,25 +104,25 @@ var userSchmea = {
     username: {},
     managerId: {}
   },
-  
+
   //you can define relations for models
   relations: {
     manager: {
       //the linking resources schema name
       resource: 'user',
-      
+
       //the property the links to the relationship
       property: 'managerId'
     }
   },
-  
-  //where in the REST end-point response the data is located for calls that return multiple objects 
+
+  //where in the REST end-point response the data is located for calls that return multiple objects
   dataListLocation: 'response.data.users',
-  
-  //where in the REST end-point response the data is located for calls that return a single object 
+
+  //where in the REST end-point response the data is located for calls that return a single object
   dataItemLocation: 'response.data.user'
 };
-  
+
 nagRestSchemaManager.add('user', userSchema);
 ```
 
@@ -144,12 +144,12 @@ var user = userRepository.mngr.create({
 });
 
 //find a single object
-var user = userRepository.mngr.find(1);
+var user = userRepository.mngr.find(1).models;
 
 //find multiple objects
 var users = userRepository.mngr.find({
   firstName: 'John'
-});
+}).models;
 ```
 
 In order to save an object, you can call the sync method:
