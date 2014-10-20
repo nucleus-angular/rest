@@ -278,7 +278,7 @@ angular.module('nag.rest')
 
             var models = (isArray === true ? [] : self.mngr.create({}, false, schema));
             var deferred = $q.defer();
-            value = deferred.promise;
+            var value = deferred.promise;
             value.models = models
 
             if(httpConfig.method === 'JSONP') {
