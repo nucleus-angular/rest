@@ -279,7 +279,7 @@ angular.module('nag.rest')
             var models = (isArray === true ? [] : self.mngr.create({}, false, schema));
             var deferred = $q.defer();
             var value = deferred.promise;
-            value.models = models
+            value.models = models;
 
             if(httpConfig.method === 'JSONP') {
               httpConfig.url += '?callback=JSON_CALLBACK';

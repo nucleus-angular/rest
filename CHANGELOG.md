@@ -2,6 +2,7 @@
 
 ## master
 
+- added link to coding standards in READ ME
 - fixed variable declaration (#45)
 
 ## 0.6.0
