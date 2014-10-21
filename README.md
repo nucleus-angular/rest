@@ -73,14 +73,14 @@ This is only provided as a quick start guide and will not cover every single pos
 In order to get started we need to create and object to interact with the REST end-point.  In order to create that object, you need to define the schema for the model.  You use the nagRestSchemaManager in order to add a schema:
 
 ```javascript
-var userSchmea = {
-  //route the the REST end-point
+var userSchema = {
+  // route the the REST end-point
   route: '/users',
 
-  //list of properties for the model
+  // list of properties for the model
   properties: {
     id: {
-      //whether or not to send the property to the REST end-point when syncing data
+      // whether or not to send the property to the REST end-point when syncing data
       sync: false,
 
       //if the name of the property returned from the REST end-point does not match the name of the
@@ -89,13 +89,13 @@ var userSchmea = {
 
       //if you need to do something every time you need to access the property, you can provide a
       //getter function
-      getter: funtion(value) {
+      getter: function (value) {
         return '#' + value;
       },
 
       //if you need to do something every time you need to set the property, you can provide a
       //setter function
-      seter: function(value) {
+      setter: function (value) {
         return '#' + value;
       }
     },
@@ -105,21 +105,21 @@ var userSchmea = {
     managerId: {}
   },
 
-  //you can define relations for models
+  // you can define relations for models
   relations: {
     manager: {
-      //the linking resources schema name
+      // the linking resources schema name
       resource: 'user',
 
-      //the property the links to the relationship
+      // the property that links to the relationship
       property: 'managerId'
     }
   },
 
-  //where in the REST end-point response the data is located for calls that return multiple objects
+  // location in response where data is located for REST calls that return multiple objects
   dataListLocation: 'response.data.users',
 
-  //where in the REST end-point response the data is located for calls that return a single object
+  // location in response where data is located for calls that return a single object
   dataItemLocation: 'response.data.user'
 };
 
@@ -137,16 +137,16 @@ var userRepository = nagRestRepositoryFactory.create('user');
 There are a number of things that can be done the respository:
 
 ```javascript
-//create a new object, optional passing default data
+// create a new object, optional passing default data
 var user = userRepository.mngr.create({
   firstName: 'John',
   lastName: 'Doe'
 });
 
-//find a single object
+// find a single object
 var user = userRepository.mngr.find(1).models;
 
-//find multiple objects
+// find multiple objects
 var users = userRepository.mngr.find({
   firstName: 'John'
 }).models;
